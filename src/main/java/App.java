@@ -17,11 +17,11 @@ public class App extends JFrame {
     private Automaton automaton;
 
     public App(String title) {
-        super();
+        super(title);
 
         String projectFolder = System.getProperty("user.dir");
         String resourceFolder = projectFolder + RESOURCE_FOLDER;
-        // Will make sure the resources folder will be opened when opening a file
+
         fc = new JFileChooser(new File(resourceFolder));
     }
 

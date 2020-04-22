@@ -18,10 +18,6 @@ public class InputFileProcessor {
     private static final String TRANSITIONS = "transitions";
     private static final String END = "end.";
 
-    private static final int SOURCE = 0;
-    private static final int LETTER = 1;
-    private static final int DESTINATION = 2;
-
     private Scanner scanner;
 
     private String alphabet;
@@ -79,7 +75,6 @@ public class InputFileProcessor {
         String[] split = line.split(":");
         String targetPart = "";
 
-        // If length is less than 2 we should probably throw an exception.
         if (split.length < 2) throw new InvalidLineFormatException("Could not process line: '" + line + "'");
 
         targetPart = split[1].trim();
@@ -117,11 +112,11 @@ public class InputFileProcessor {
         String[] transitionElements = new String[3];
 
         String[] temporary = splitTransition(",", transitionLine, transitionLine);
-        transitionElements[SOURCE] = temporary[0].trim();
+        transitionElements[Transition.SOURCE] = temporary[0].trim();
 
         temporary = splitTransition("-->", temporary[1], transitionLine);
-        transitionElements[LETTER] = temporary[0].trim();
-        transitionElements[DESTINATION] = temporary[1].trim();
+        transitionElements[Transition.LETTER] = temporary[0].trim();
+        transitionElements[Transition.DESTINATION] = temporary[1].trim();
 
         return transitionElements;
     }
