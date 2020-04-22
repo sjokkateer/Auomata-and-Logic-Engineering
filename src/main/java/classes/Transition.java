@@ -1,6 +1,6 @@
 package classes;
 
-public class Transition {
+public class Transition implements IDotFile {
     public static final int SOURCE = 0;
     public static final int LETTER = 1;
     public static final int DESTINATION = 2;
@@ -14,5 +14,14 @@ public class Transition {
         this.source = source;
         label = letter;
         this.destination = destination;
+    }
+
+    @Override
+    public String getDotFileString() {
+        String result = "\"" + source.getSymbol() + "\"";
+        result += " -> " + "\"" + destination.getSymbol() + "\"";
+        result += "[label=\"" + label + "\"]\n";
+
+        return result;
     }
 }

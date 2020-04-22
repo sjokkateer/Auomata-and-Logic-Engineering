@@ -10,4 +10,14 @@ public class Accepting extends State {
     public String getSymbol() {
         return state.getSymbol();
     }
+
+    @Override
+    protected String getShape() {
+        return "double" + super.getShape();
+    }
+
+    @Override
+    public boolean isInitial() {
+        return state.isInitial();
+    }
 }

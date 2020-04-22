@@ -2,7 +2,7 @@ package classes;
 
 import java.util.*;
 
-public class StateDiagram {
+public class StateDiagram implements IDotFile {
     private Set<State> states = new HashSet<>();
     private HashMap<State, List<Transition>> transitions = new HashMap<>();
 
@@ -27,7 +27,6 @@ public class StateDiagram {
     }
 
     private void addAcceptingStates(List<String> acceptingStates) {
-        // Should iter over a copy and modify the existing.
         Set<State> copy = new HashSet<>(states);
         for (State state: copy) {
             attemptToWrapWithAcceptingState(state, acceptingStates);
@@ -55,6 +54,11 @@ public class StateDiagram {
             t = new Transition(source, letter, destination);
 
             transitionList = this.transitions.getOrDefault(source, new ArrayList<>());
+
+            if (transitionList.size() == 0) {
+                this.transitions.put(source, transitionList);
+            }
+
             transitionList.add(t);
         }
     }
@@ -73,6 +77,36 @@ public class StateDiagram {
                 return state;
             }
         }
+        return null;
+    }
+
+    @Override
+    public String getDotFileString() {
+        String result = "\trankdir=LR;\n";
+        result += "\t\"\" [shape=none]\n";
+
+        for (State state: states) {
+            result += "\t" + state.getDotFileString();
+        }
+
+        result += "\n";
+        State initialState = getInitialState();
+        result += "\t\"\" -> \"" + initialState.getSymbol() + "\"\n";
+
+        for (State state: states) {
+            for (Transition transition: transitions.getOrDefault(state, new ArrayList<>())) {
+                result += "\t" + transition.getDotFileString();
+            }
+        }
+
+        return result;
+    }
+
+    private State getInitialState() {
+        for (State state: states) {
+            if (state.isInitial()) return state;
+        }
+
         return null;
     }
 }

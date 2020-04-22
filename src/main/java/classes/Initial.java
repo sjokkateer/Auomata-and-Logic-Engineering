@@ -10,4 +10,9 @@ public class Initial extends State {
     public String getSymbol() {
         return state.getSymbol();
     }
+
+    @Override
+    public boolean isInitial() {
+        return true;
+    }
 }

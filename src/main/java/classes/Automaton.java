@@ -8,7 +8,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Automaton {
+public class Automaton implements IDotFile {
+    public static final String NAME = "myAutomaton";
     private static InputFileProcessor inputFileProcessor;
     private Set<Character> alphabet;
     private StateDiagram stateDiagram;
@@ -24,17 +25,15 @@ public class Automaton {
         }
 
         inputFileProcessor.process(file);
-        Set<Character> alphabet = createAlphabetSet(inputFileProcessor.getAlphabet());
-        // Create state diagram.
 
+        Set<Character> alphabet = createAlphabetSet(inputFileProcessor.getAlphabet());
         StateDiagram stateDiagram = new StateDiagram(
                 inputFileProcessor.getStates(),
                 inputFileProcessor.getAcceptingStates(),
                 inputFileProcessor.getTransitions()
         );
 
-        Automaton automaton = new Automaton(alphabet, stateDiagram);
-        return automaton;
+        return new Automaton(alphabet, stateDiagram);
     }
 
     private static Set<Character> createAlphabetSet(String alphabet) {
@@ -45,5 +44,14 @@ public class Automaton {
         }
 
         return alphabetSet;
+    }
+
+    @Override
+    public String getDotFileString() {
+        String result = "digraph " + NAME + " { \n";
+        result += stateDiagram.getDotFileString();
+        result += "}\n";
+
+        return result;
     }
 }

@@ -1,28 +1,33 @@
 import classes.Automaton;
+import classes.AutomatonFileManager;
 import classes.Exceptions.FileProcessingException;
 import classes.Exceptions.InvalidTransitionFormatException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class App extends JFrame {
     private JPanel mainPanel;
     private JButton openFileBtn;
     private JLabel openedFileLb;
+    private JLabel stateDiagramLb;
+    private JLabel isDnfLb;
     private JFileChooser fc;
 
-    private static final String RESOURCE_FOLDER = "/src/main/resources";
     private Automaton automaton;
 
     public App(String title) {
         super(title);
 
-        String projectFolder = System.getProperty("user.dir");
-        String resourceFolder = projectFolder + RESOURCE_FOLDER;
-
-        fc = new JFileChooser(new File(resourceFolder));
+        fc = new JFileChooser(new File(AutomatonFileManager.getResourceFolder()));
     }
 
     public App() {
@@ -49,7 +54,11 @@ public class App extends JFrame {
 
             try {
                 automaton = Automaton.fromFile(file);
-            } catch (FileProcessingException e) {
+                AutomatonFileManager.createDotFile(automaton);
+                BufferedImage stateDiagramImage = AutomatonFileManager.createDotFileImage();
+
+                stateDiagramLb.setIcon(new ImageIcon(stateDiagramImage));
+            } catch (FileProcessingException | FileNotFoundException e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
             }
@@ -58,6 +67,8 @@ public class App extends JFrame {
 
     public static void main(String[] args) {
         App app = new App();
+
+        app.setExtendedState(JFrame.MAXIMIZED_BOTH);
         app.setVisible(true);
     }
 }
