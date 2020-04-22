@@ -19,7 +19,8 @@ public class App extends JFrame {
     private JButton openFileBtn;
     private JLabel openedFileLb;
     private JLabel stateDiagramLb;
-    private JLabel isDnfLb;
+    private JLabel isDFALb;
+    private JLabel alphabetLb;
     private JFileChooser fc;
 
     private Automaton automaton;
@@ -40,12 +41,18 @@ public class App extends JFrame {
         openFileBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openFile();
+                createAutomatonFromFile();
+
+                if (automaton != null) {
+                    displayAlphabet();
+                    createDiagramImage();
+                    displayIfDFA();
+                }
             }
         });
     }
 
-    private void openFile() {
+    private void createAutomatonFromFile() {
         int returnValue = fc.showOpenDialog(this);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -54,15 +61,51 @@ public class App extends JFrame {
 
             try {
                 automaton = Automaton.fromFile(file);
-                AutomatonFileManager.createDotFile(automaton);
-                BufferedImage stateDiagramImage = AutomatonFileManager.createDotFileImage();
-
-                stateDiagramLb.setIcon(new ImageIcon(stateDiagramImage));
-            } catch (FileProcessingException | FileNotFoundException e) {
+            } catch (FileProcessingException e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
             }
         }
+    }
+
+    private void displayAlphabet() {
+        String result = "<html>Alphabet: <br/>";
+
+        for(char letter: automaton.getAlphabet()) {
+            result += letter + ", ";
+        }
+
+        alphabetLb.setText(removeTrailingComma(result));
+    }
+
+    private String removeTrailingComma(String result) {
+        int end = result.length() - 2;
+
+        return result.substring(0, end);
+    }
+
+    private void createDiagramImage() {
+        try {
+            AutomatonFileManager.createDotFile(automaton);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        BufferedImage stateDiagramImage = AutomatonFileManager.createDotFileImage();
+        stateDiagramLb.setIcon(new ImageIcon(stateDiagramImage));
+    }
+
+    private void displayIfDFA() {
+        boolean isDFA = automaton.isDFA();
+        String result = "This automaton is";
+
+        if (!isDFA) {
+            result += " NOT";
+        }
+
+        result += " a DFA";
+
+        isDFALb.setText(result);
     }
 
     public static void main(String[] args) {

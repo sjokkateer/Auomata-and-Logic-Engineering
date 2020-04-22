@@ -24,4 +24,8 @@ public class Transition implements IDotFile {
 
         return result;
     }
+
+    public Character getLabel() {
+        return label;
+    }
 }

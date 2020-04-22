@@ -109,4 +109,12 @@ public class StateDiagram implements IDotFile {
 
         return null;
     }
+
+    public Set<State> getStates() {
+        return states;
+    }
+
+    public List<Transition> getTransitions(State state) {
+        return transitions.getOrDefault(state, new ArrayList<>());
+    }
 }
