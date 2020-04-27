@@ -1,18 +1,13 @@
 import classes.Automaton;
 import classes.AutomatonFileManager;
 import classes.Exceptions.FileProcessingException;
-import classes.Exceptions.InvalidTransitionFormatException;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 public class App extends JFrame {
     private JPanel mainPanel;
@@ -24,6 +19,9 @@ public class App extends JFrame {
     private JFileChooser fc;
 
     private Automaton automaton;
+
+    public static final int WIDTH = 650;
+    public static final int HEIGHT = 350;
 
     public App(String title) {
         super(title);
@@ -110,8 +108,8 @@ public class App extends JFrame {
 
     public static void main(String[] args) {
         App app = new App();
-
-        app.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        app.setSize(App.WIDTH, App.HEIGHT);
+        app.setLocationRelativeTo(null);
         app.setVisible(true);
     }
 }
