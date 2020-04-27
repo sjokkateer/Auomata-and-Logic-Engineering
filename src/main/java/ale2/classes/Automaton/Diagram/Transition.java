@@ -1,4 +1,6 @@
-package classes;
+package ale2.classes.Automaton.Diagram;
+
+import ale2.classes.Automaton.IDotFile;
 
 public class Transition implements IDotFile {
     public static final int SOURCE = 0;

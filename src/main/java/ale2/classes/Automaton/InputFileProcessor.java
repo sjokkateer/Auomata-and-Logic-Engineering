@@ -1,8 +1,7 @@
-package classes;
+package ale2.classes.Automaton;
 
-import classes.Exceptions.InvalidLineFormatException;
-import classes.Exceptions.InvalidTransitionFormatException;
-import classes.Exceptions.NoTransitionEndFoundException;
+import ale2.classes.Automaton.Diagram.Transition;
+import ale2.classes.Automaton.Exceptions.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,6 +16,7 @@ public class InputFileProcessor {
     private static final String ACCEPTING_STATES = "final";
     private static final String TRANSITIONS = "transitions";
     private static final String END = "end.";
+    private static final String WORDS = "words";
 
     private Scanner scanner;
 
@@ -24,8 +24,9 @@ public class InputFileProcessor {
     private List<String> states;
     private List<String> acceptingStates;
     private List<String[]> transitions;
+    private List<String> words;
 
-    public void process(File file) throws InvalidTransitionFormatException, NoTransitionEndFoundException, InvalidLineFormatException {
+    public void process(File file) throws FileProcessingException {
         resetFields();
 
         try {
@@ -46,7 +47,7 @@ public class InputFileProcessor {
         }
     }
 
-    private void processLine(String line) throws InvalidTransitionFormatException, NoTransitionEndFoundException, InvalidLineFormatException {
+    private void processLine(String line) throws FileProcessingException {
         String lineToLower = line.toLowerCase();
 
         if (lineToLower.contains(ALPHABET)) {
@@ -57,6 +58,8 @@ public class InputFileProcessor {
             processAcceptingStates(line);
         } else if (lineToLower.contains(TRANSITIONS)) {
             processTransitions();
+        } else if (lineToLower.contains(WORDS)) {
+            processWords();
         }
     }
 
@@ -67,11 +70,11 @@ public class InputFileProcessor {
         transitions = new ArrayList<>();
     }
 
-    private void processAlphabet(String line) throws InvalidLineFormatException {
+    private void processAlphabet(String line) throws FileProcessingException {
         this.alphabet = getAppropriatePart(line);
     }
 
-    private String getAppropriatePart(String line) throws InvalidLineFormatException {
+    private String getAppropriatePart(String line) throws FileProcessingException {
         String[] split = line.split(":");
         String targetPart = "";
 
@@ -82,7 +85,7 @@ public class InputFileProcessor {
         return targetPart;
     }
 
-    private void processStates(String line) throws InvalidLineFormatException {
+    private void processStates(String line) throws FileProcessingException {
         String states = getAppropriatePart(line);
         this.states = splitStates(states);
     }
@@ -91,24 +94,40 @@ public class InputFileProcessor {
         return Arrays.asList(states.split(","));
     }
 
-    private void processAcceptingStates(String line) throws InvalidLineFormatException {
+    private void processAcceptingStates(String line) throws FileProcessingException {
         String acceptingStates = getAppropriatePart(line);
         this.acceptingStates = splitStates(acceptingStates);
     }
 
-    private void processTransitions() throws InvalidTransitionFormatException, NoTransitionEndFoundException {
+    private void processTransitions() throws FileProcessingException {
+        AddLine transitionMethod = (line) -> {
+            transitions.add(processTransitionLine(line));
+        };
+
+        processSequenceOfLines(transitionMethod, "transitions");
+    }
+
+    private void processSequenceOfLines(AddLine method, String topic) throws FileProcessingException {
         String line = "";
 
         while (scanner.hasNextLine()) {
             line = scanner.nextLine();
             if (line.toLowerCase().contains(END)) break;
-            transitions.add(processTransitionLine(line));
+            method.add(line);
         }
 
-        if (!line.toLowerCase().contains(END)) throw new NoTransitionEndFoundException("Your file did not contain an 'end.' for reading the transitions");
+        if (!line.toLowerCase().contains(END)) throw new NoEndFoundException("Could not find the end. indication after your sequence of " + topic);
     }
 
-    private String[] processTransitionLine(String transitionLine) throws InvalidTransitionFormatException {
+    interface AddLine {
+        void add(String line) throws FileProcessingException;
+    }
+
+    private void processWords() {
+        // AddLine
+    }
+
+    private String[] processTransitionLine(String transitionLine) throws FileProcessingException {
         String[] transitionElements = new String[3];
 
         String[] temporary = splitTransition(",", transitionLine, transitionLine);
@@ -121,11 +140,11 @@ public class InputFileProcessor {
         return transitionElements;
     }
 
-    private String[] splitTransition(String splitPattern, String partToSplit, String transitionLine) throws InvalidTransitionFormatException {
+    private String[] splitTransition(String splitPattern, String partToSplit, String transitionLine) throws FileProcessingException {
         String[] temporary = partToSplit.split(splitPattern);
 
         if (temporary.length < 2) {
-            throw new InvalidTransitionFormatException("The given transition is invalid: " + transitionLine);
+            throw new InvalidLineFormatException("The given transition is invalid: " + transitionLine);
         }
 
         return temporary;
@@ -146,4 +165,6 @@ public class InputFileProcessor {
     public List<String[]> getTransitions() {
         return transitions;
     }
+
+    public List<String> getWords() { return words; }
 }

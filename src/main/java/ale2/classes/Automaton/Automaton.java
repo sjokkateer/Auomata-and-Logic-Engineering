@@ -1,8 +1,9 @@
-package classes;
+package ale2.classes.Automaton;
 
-import classes.Exceptions.InvalidLineFormatException;
-import classes.Exceptions.InvalidTransitionFormatException;
-import classes.Exceptions.NoTransitionEndFoundException;
+import ale2.classes.Automaton.Diagram.State;
+import ale2.classes.Automaton.Diagram.StateDiagram;
+import ale2.classes.Automaton.Diagram.Transition;
+import ale2.classes.Automaton.Exceptions.FileProcessingException;
 
 import java.io.File;
 import java.util.HashSet;
@@ -21,7 +22,7 @@ public class Automaton implements IDotFile {
         this.stateDiagram = stateDiagram;
     }
 
-    public static Automaton fromFile(File file) throws InvalidTransitionFormatException, InvalidLineFormatException, NoTransitionEndFoundException {
+    public static Automaton fromFile(File file) throws FileProcessingException {
         if (inputFileProcessor == null) {
             inputFileProcessor = new InputFileProcessor();
         }

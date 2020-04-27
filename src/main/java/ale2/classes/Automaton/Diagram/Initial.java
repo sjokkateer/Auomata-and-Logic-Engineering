@@ -1,4 +1,4 @@
-package classes;
+package ale2.classes.Automaton.Diagram;
 
 public class Initial extends State {
     private State state;

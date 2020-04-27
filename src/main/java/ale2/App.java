@@ -1,6 +1,8 @@
-import classes.Automaton;
-import classes.AutomatonFileManager;
-import classes.Exceptions.FileProcessingException;
+package ale2;
+
+import ale2.classes.Automaton.Automaton;
+import ale2.classes.Automaton.AutomatonFileManager;
+import ale2.classes.Automaton.Exceptions.FileProcessingException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -16,7 +18,9 @@ public class App extends JFrame {
     private JLabel stateDiagramLb;
     private JLabel isDFALb;
     private JLabel alphabetLb;
-    private JFileChooser fc;
+    private JList wordList;
+    private JPanel leftSidePanel;
+    private JFileChooser fileChooser;
 
     private Automaton automaton;
 
@@ -26,7 +30,8 @@ public class App extends JFrame {
     public App(String title) {
         super(title);
 
-        fc = new JFileChooser(new File(AutomatonFileManager.getResourceFolder()));
+        fileChooser = new JFileChooser(new File(AutomatonFileManager.getResourceFolder()));
+        fileChooser.setDialogTitle("Choose Automaton Input File");
     }
 
     public App() {
@@ -39,6 +44,9 @@ public class App extends JFrame {
         openFileBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // This should preferably be handled smarter.
+                // At the moment if an automaton is created, and after that the user pretends
+                // to select a new one but cancels, it will again run through the previously selected automaton.
                 createAutomatonFromFile();
 
                 if (automaton != null) {
@@ -51,10 +59,12 @@ public class App extends JFrame {
     }
 
     private void createAutomatonFromFile() {
-        int returnValue = fc.showOpenDialog(this);
+        int returnValue = fileChooser.showOpenDialog(this);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
+            File file = fileChooser.getSelectedFile();
+            // Sets the file's parent folder as the folder to put the dot file and image to use.
+            AutomatonFileManager.setDotBasePath(file.getParent());
             openedFileLb.setText("Currently opened: " + file.getName());
 
             try {
@@ -67,7 +77,7 @@ public class App extends JFrame {
     }
 
     private void displayAlphabet() {
-        String result = "<html>Alphabet: <br/>";
+        String result = "Alphabet: ";
 
         for(char letter: automaton.getAlphabet()) {
             result += letter + ", ";
