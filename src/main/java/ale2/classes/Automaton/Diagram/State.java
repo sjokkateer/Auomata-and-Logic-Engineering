@@ -2,6 +2,8 @@ package ale2.classes.Automaton.Diagram;
 
 import ale2.classes.Automaton.IDotFile;
 
+import java.util.Objects;
+
 public class State implements IDotFile {
     private String symbol;
 
@@ -26,5 +28,18 @@ public class State implements IDotFile {
 
     public boolean isInitial() {
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        State state = (State) o;
+        return Objects.equals(symbol, state.symbol);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(symbol);
     }
 }

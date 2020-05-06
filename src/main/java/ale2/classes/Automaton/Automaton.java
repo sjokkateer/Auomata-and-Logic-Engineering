@@ -4,6 +4,7 @@ import ale2.classes.Automaton.Diagram.State;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Diagram.Transition;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
+import ale2.classes.Automaton.Regex.Word;
 
 import java.io.File;
 import java.util.HashSet;
@@ -16,10 +17,12 @@ public class Automaton implements IDotFile {
 
     private Set<Character> alphabet;
     private StateDiagram stateDiagram;
+    private Set<Word> wordCollection;
 
-    public Automaton(Set<Character> alphabet, StateDiagram stateDiagram) {
+    public Automaton(Set<Character> alphabet, StateDiagram stateDiagram, Set<Word> wordCollection) {
         this.alphabet = alphabet;
         this.stateDiagram = stateDiagram;
+        this.wordCollection = wordCollection;
     }
 
     public static Automaton fromFile(File file) throws FileProcessingException {
@@ -35,8 +38,9 @@ public class Automaton implements IDotFile {
                 inputFileProcessor.getAcceptingStates(),
                 inputFileProcessor.getTransitions()
         );
+        Set<Word> wordCollection = createWordCollection(inputFileProcessor.getWords());
 
-        return new Automaton(alphabet, stateDiagram);
+        return new Automaton(alphabet, stateDiagram, wordCollection);
     }
 
     private static Set<Character> createAlphabetSet(String alphabet) {
@@ -47,6 +51,20 @@ public class Automaton implements IDotFile {
         }
 
         return alphabetSet;
+    }
+
+    private static Set<Word> createWordCollection(List<String[]> words) {
+        Set<Word> wordCollection = new HashSet<>();
+
+        for (String[] wordElements: words) {
+            String wordContent = wordElements[Word.WORD];
+            // So any other letter than y and will default to false
+            boolean expectedInLanguage = wordElements[Word.EXPECTED_PART_OF_LANGUAGE].equals("y") ? true : false;
+
+            wordCollection.add(new Word(wordContent, expectedInLanguage));
+        }
+
+        return wordCollection;
     }
 
     public boolean isDFA() {
