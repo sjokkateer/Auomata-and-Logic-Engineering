@@ -24,7 +24,7 @@ public class InputFileProcessor {
     private List<String> states;
     private List<String> acceptingStates;
     private List<String[]> transitions;
-    private List<String> words;
+    private List<String[]> words;
 
     public void process(File file) throws FileProcessingException {
         resetFields();
@@ -68,6 +68,7 @@ public class InputFileProcessor {
         states = new ArrayList<>();
         acceptingStates = new ArrayList<>();
         transitions = new ArrayList<>();
+        words = new ArrayList<>();
     }
 
     private void processAlphabet(String line) throws FileProcessingException {
@@ -123,31 +124,39 @@ public class InputFileProcessor {
         void add(String line) throws FileProcessingException;
     }
 
-    private void processWords() {
-        // AddLine
-    }
-
     private String[] processTransitionLine(String transitionLine) throws FileProcessingException {
         String[] transitionElements = new String[3];
 
-        String[] temporary = splitTransition(",", transitionLine, transitionLine);
+        String[] temporary = splitLine(",", transitionLine, transitionLine);
         transitionElements[Transition.SOURCE] = temporary[0].trim();
 
-        temporary = splitTransition("-->", temporary[1], transitionLine);
+        temporary = splitLine("-->", temporary[1], transitionLine);
         transitionElements[Transition.LETTER] = temporary[0].trim();
         transitionElements[Transition.DESTINATION] = temporary[1].trim();
 
         return transitionElements;
     }
 
-    private String[] splitTransition(String splitPattern, String partToSplit, String transitionLine) throws FileProcessingException {
+    private String[] splitLine(String splitPattern, String partToSplit, String transitionLine) throws FileProcessingException {
         String[] temporary = partToSplit.split(splitPattern);
 
-        if (temporary.length < 2) {
-            throw new InvalidLineFormatException("The given transition is invalid: " + transitionLine);
+        if (temporary.length != 2) {
+            throw new InvalidLineFormatException("The given line is invalid: " + transitionLine);
         }
 
         return temporary;
+    }
+
+    private void processWords() throws FileProcessingException {
+        AddLine wordMethod = (line) -> {
+            words.add(processWordLine(line));
+        };
+
+        processSequenceOfLines(wordMethod, "words");
+    }
+
+    private String[] processWordLine(String line) throws FileProcessingException {
+        return splitLine(",", line, line);
     }
 
     public String getAlphabet() {
@@ -166,5 +175,5 @@ public class InputFileProcessor {
         return transitions;
     }
 
-    public List<String> getWords() { return words; }
+    public List<String[]> getWords() { return words; }
 }
