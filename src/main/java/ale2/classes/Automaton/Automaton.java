@@ -5,6 +5,7 @@ import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Diagram.Transition;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
 import ale2.classes.Automaton.Regex.Word;
+import ale2.classes.Automaton.Regex.WordValidator;
 
 import java.io.File;
 import java.util.HashSet;
@@ -19,10 +20,15 @@ public class Automaton implements IDotFile {
     private StateDiagram stateDiagram;
     private Set<Word> wordCollection;
 
+    private WordValidator wordValidator;
+
     public Automaton(Set<Character> alphabet, StateDiagram stateDiagram, Set<Word> wordCollection) {
         this.alphabet = alphabet;
         this.stateDiagram = stateDiagram;
         this.wordCollection = wordCollection;
+
+        wordValidator = new WordValidator(stateDiagram);
+        wordValidator.check(wordCollection);
     }
 
     public static Automaton fromFile(File file) throws FileProcessingException {
@@ -92,6 +98,10 @@ public class Automaton implements IDotFile {
 
     public Set<Character> getAlphabet() {
         return new HashSet<>(alphabet);
+    }
+
+    public Set<Word> getWordCollection() {
+        return wordCollection;
     }
 
     @Override

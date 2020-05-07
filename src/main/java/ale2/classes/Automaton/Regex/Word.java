@@ -7,32 +7,34 @@ public class Word {
     public static int EXPECTED_PART_OF_LANGUAGE = 1;
 
     private String word;
-    private boolean isPartOfLanguage;
-    private boolean isExpectedToBePartOfLanguage;
+    private boolean belongsToLanguage;
+    private boolean isExpectedToBelongToLanguage;
 
-    public Word(String word, boolean isExpectedToBePartOfLanguage) {
+    // Then maybe the word should be related to a state diagram rather than a non
+    // indicating isPartOfLanguage
+    public Word(String word, boolean isExpectedToBelongToLanguage) {
         if (word == null) {
             throw new IllegalArgumentException("Word's content may not be null!");
         }
 
         this.word = word;
-        this.isExpectedToBePartOfLanguage = isExpectedToBePartOfLanguage;
+        this.isExpectedToBelongToLanguage = isExpectedToBelongToLanguage;
     }
 
     public String getWord() {
         return word;
     }
 
-    public boolean isPartOfLanguage() {
-        return isPartOfLanguage;
+    public boolean BelongsToLanguage() {
+        return belongsToLanguage;
     }
 
-    public void setPartOfLanguage(boolean partOfLanguage) {
-        isPartOfLanguage = partOfLanguage;
+    public void setBelongsToLanguage(boolean partOfLanguage) {
+        belongsToLanguage = partOfLanguage;
     }
 
-    public boolean isExpectedToBePartOfLanguage() {
-        return isExpectedToBePartOfLanguage;
+    public boolean isExpectedToBelongToLanguage() {
+        return isExpectedToBelongToLanguage;
     }
 
     @Override
@@ -52,8 +54,8 @@ public class Word {
     public String toString() {
         return "Word{" +
                 "word='" + word + '\'' +
-                ", isPartOfLanguage=" + isPartOfLanguage +
-                ", isExpectedToBePartOfLanguage=" + isExpectedToBePartOfLanguage +
+                ", isPartOfLanguage=" + belongsToLanguage +
+                ", isExpectedToBePartOfLanguage=" + isExpectedToBelongToLanguage +
                 '}';
     }
 }

@@ -49,11 +49,13 @@ public class StateDiagram implements IDotFile {
         State destination = null;
 
         for (String[] transition: transitions) {
+            // Example
+            // ["q0", "a", "q1"]
             source = getState(source, transition[Transition.SOURCE]);
             char letter = transition[Transition.LETTER].charAt(0); // We should always have one character strings x) or we have invalid values.
             destination = getState(destination, transition[Transition.DESTINATION]);
 
-            t = new Transition(source, letter, destination);
+            t = Transition.fromLetter(source, letter, destination);
 
             transitionList = this.transitions.getOrDefault(source, new ArrayList<>());
 
@@ -104,7 +106,7 @@ public class StateDiagram implements IDotFile {
         return result;
     }
 
-    private State getInitialState() {
+    public State getInitialState() {
         for (State state: states) {
             if (state.isInitial()) return state;
         }

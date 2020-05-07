@@ -20,4 +20,9 @@ public class Accepting extends State {
     public boolean isInitial() {
         return state.isInitial();
     }
+
+    @Override
+    public boolean isAccepting() {
+        return true;
+    }
 }

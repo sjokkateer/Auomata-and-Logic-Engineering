@@ -3,6 +3,7 @@ package ale2;
 import ale2.classes.Automaton.Automaton;
 import ale2.classes.Automaton.AutomatonFileManager;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
+import ale2.classes.Automaton.Regex.Word;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Set;
 
 public class App extends JFrame {
     private JPanel mainPanel;
@@ -53,6 +55,7 @@ public class App extends JFrame {
                     displayAlphabet();
                     createDiagramImage();
                     displayIfDFA();
+                    displayWords();
                 }
             }
         });
@@ -114,6 +117,11 @@ public class App extends JFrame {
         result += " a DFA";
 
         isDFALb.setText(result);
+    }
+
+    public void displayWords() {
+        Set<Word> words = automaton.getWordCollection();
+
     }
 
     public static void main(String[] args) {
