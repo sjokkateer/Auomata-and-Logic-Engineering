@@ -22,12 +22,17 @@ public class Automaton implements IDotFile {
 
     private WordValidator wordValidator;
 
+    // Maybe alphabet should be removed from the automaton and be part of the wordValidator (which more or less manages all word/letter
+    // related stuff. The automaton could then still call as client to obtain the alphabet from the wordvalidator obj.
+    // Perhaps the word collection then too, and forward the call from automaton to wordvalidator as client.
+    // And perhaps the wordvalidator should become a subclass of a management kind of class that only interacts with classes
+    // by forwarding methods.
     public Automaton(Set<Character> alphabet, StateDiagram stateDiagram, Set<Word> wordCollection) {
         this.alphabet = alphabet;
         this.stateDiagram = stateDiagram;
         this.wordCollection = wordCollection;
 
-        wordValidator = new WordValidator(stateDiagram);
+        wordValidator = new WordValidator(this.alphabet, stateDiagram);
         wordValidator.check(wordCollection);
     }
 
@@ -102,6 +107,10 @@ public class Automaton implements IDotFile {
 
     public Set<Word> getWordCollection() {
         return wordCollection;
+    }
+
+    public WordValidator getWordValidator() {
+        return wordValidator;
     }
 
     @Override

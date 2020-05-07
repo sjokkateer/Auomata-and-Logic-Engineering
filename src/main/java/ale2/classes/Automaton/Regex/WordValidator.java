@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Set;
 
 public class WordValidator {
+    private Set<Character> alphabet;
     private StateDiagram stateDiagram;
 
-    public WordValidator(StateDiagram stateDiagram) {
+    public WordValidator(Set<Character> alphabet, StateDiagram stateDiagram) {
+        this.alphabet = alphabet;
         this.stateDiagram = stateDiagram;
     }
 
@@ -29,14 +31,17 @@ public class WordValidator {
      */
     public void validate(Word word) {
         State initialState = stateDiagram.getInitialState();
+
+        // We should exit this method (the word will remain false (not belonging to the language)
+        // in case there is no final/accepting state in the automata and or it contains letters not belonging
+        // to the alphabet.
+
         belongsToLanguage(initialState, word.getWord(), word);
     }
 
     private void belongsToLanguage(State currentState, String currentWord, Word wordObject) {
         if (currentWord.length() <= 0) {
-            // Then current state has to be accepting or otherwise it's false.
             if (currentState.isAccepting()) {
-                // Change the currentWord's
                 wordObject.setBelongsToLanguage(true);
             } else {
                 // even if this is not yet an accepting state, we could potentially finish by taking another empty string transition
@@ -57,11 +62,6 @@ public class WordValidator {
 
                 if (possibleTransition.getLabel().equals(currentCharacter)) {
                     String remainder = currentWord.substring(1);
-                    // Op een dood eind komt ie hier uit op false en als die zou returnen, stopt
-                    // de verdere execution i.p.v. dat de volgende nog wordt nagekeken.
-                    // dus of ik geef het word object door en verander tot true als
-                    // we de base case rijken, maar dan zouden we alsnog
-                    // eerder uit de recursieve functie willen gaan voor efficientie.
                     belongsToLanguage(destination, remainder, wordObject);
                 } else if (isEmptyStringTransitionWithDifferentDestination(possibleTransition)) {
                     belongsToLanguage(destination, currentWord, wordObject);

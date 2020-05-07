@@ -6,6 +6,7 @@ import ale2.classes.Automaton.Exceptions.FileProcessingException;
 import ale2.classes.Automaton.Regex.Word;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -20,8 +21,13 @@ public class App extends JFrame {
     private JLabel stateDiagramLb;
     private JLabel isDFALb;
     private JLabel alphabetLb;
-    private JList wordList;
     private JPanel leftSidePanel;
+    private JList wordList;
+    private DefaultListModel wordListModel;
+    private JTextField wordTextField;
+    private JButton addWordBtn;
+    private JLabel wordLb;
+    private JScrollPane wordListScrollPane;
     private JFileChooser fileChooser;
 
     private Automaton automaton;
@@ -56,9 +62,28 @@ public class App extends JFrame {
                     createDiagramImage();
                     displayIfDFA();
                     displayWords();
+
+                    enableWordFormControls();
                 }
             }
         });
+        addWordBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String wordContent = wordTextField.getText();
+
+                if (!wordContent.equals("")) {
+                    Word word = new Word(wordContent);
+                    automaton.getWordValidator().validate(word);
+                    wordListModel.addElement(word);
+                }
+            }
+        });
+    }
+
+    private void enableWordFormControls() {
+        wordTextField.setEditable(true);
+        addWordBtn.setEnabled(true);
     }
 
     private void createAutomatonFromFile() {
@@ -121,6 +146,13 @@ public class App extends JFrame {
 
     public void displayWords() {
         Set<Word> words = automaton.getWordCollection();
+        wordListModel = new DefaultListModel();
+
+        for (Word w: words) {
+            wordListModel.addElement(w);
+        }
+
+        wordList.setModel(wordListModel);
     }
 
     public static void main(String[] args) {
