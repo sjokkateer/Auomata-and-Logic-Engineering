@@ -18,20 +18,12 @@ public class Transition implements IDotFile {
         this.destination = destination;
     }
 
-    public static Transition fromLetter(State source, char letter, State destination) {
-        Transition t;
-
-        if (letter == '_') {
-            t = new EmptyStringTransition(source, letter, destination);
-        } else {
-            t = new Transition(source, letter, destination);
-        }
-
-        return t;
-    }
-
     public State getDestination() {
         return destination;
+    }
+
+    public State getSource() {
+        return source;
     }
 
     @Override

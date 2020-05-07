@@ -25,7 +25,7 @@ public class Word {
         return word;
     }
 
-    public boolean BelongsToLanguage() {
+    public boolean doesBelongToLanguage() {
         return belongsToLanguage;
     }
 

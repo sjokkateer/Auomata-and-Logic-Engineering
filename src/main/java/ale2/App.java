@@ -121,7 +121,6 @@ public class App extends JFrame {
 
     public void displayWords() {
         Set<Word> words = automaton.getWordCollection();
-
     }
 
     public static void main(String[] args) {

@@ -39,11 +39,11 @@ public class State implements IDotFile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         State state = (State) o;
-        return Objects.equals(symbol, state.symbol);
+        return Objects.equals(getSymbol(), state.getSymbol());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(symbol);
+        return getSymbol().hashCode();
     }
 }

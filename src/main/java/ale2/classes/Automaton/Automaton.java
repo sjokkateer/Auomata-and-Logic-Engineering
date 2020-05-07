@@ -65,7 +65,7 @@ public class Automaton implements IDotFile {
         for (String[] wordElements: words) {
             String wordContent = wordElements[Word.WORD];
             // So any other letter than y and will default to false
-            boolean expectedInLanguage = wordElements[Word.EXPECTED_PART_OF_LANGUAGE].equals("y") ? true : false;
+            boolean expectedInLanguage = wordElements[Word.EXPECTED_PART_OF_LANGUAGE].equals("y");
 
             wordCollection.add(new Word(wordContent, expectedInLanguage));
         }

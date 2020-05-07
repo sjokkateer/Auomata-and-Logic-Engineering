@@ -55,7 +55,7 @@ public class StateDiagram implements IDotFile {
             char letter = transition[Transition.LETTER].charAt(0); // We should always have one character strings x) or we have invalid values.
             destination = getState(destination, transition[Transition.DESTINATION]);
 
-            t = Transition.fromLetter(source, letter, destination);
+            t = new Transition(source, letter, destination);
 
             transitionList = this.transitions.getOrDefault(source, new ArrayList<>());
 

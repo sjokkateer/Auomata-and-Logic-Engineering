@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 public class WordValidator {
-    // This class will take a word
-    // and based on the state diagram (root/initial state)
-    // This object will check whether the word belongs to the language of the diagram/automaton
     private StateDiagram stateDiagram;
 
     public WordValidator(StateDiagram stateDiagram) {
@@ -31,34 +28,54 @@ public class WordValidator {
      * @return the input word
      */
     public void validate(Word word) {
-        // This is more or less a wrapper which will call the actual validation method (recursive)
         State initialState = stateDiagram.getInitialState();
-        word.setBelongsToLanguage(belongsToLanguage(initialState, word.getWord()));
+        belongsToLanguage(initialState, word.getWord(), word);
     }
 
-    private boolean belongsToLanguage(State currentState, String currentWord) {
-        // This can get into an infinite loop if _ is traversed in a cycle.
-        // thus we should keep track if we visited already used that character without further result
+    private void belongsToLanguage(State currentState, String currentWord, Word wordObject) {
         if (currentWord.length() <= 0) {
             // Then current state has to be accepting or otherwise it's false.
             if (currentState.isAccepting()) {
-                return true;
+                // Change the currentWord's
+                wordObject.setBelongsToLanguage(true);
+            } else {
+                // even if this is not yet an accepting state, we could potentially finish by taking another empty string transition
+                // to an actual accepting state.
+                // so if we add another empty string symbol to the currentWord, we can reuse the method with the exact
+                // same currentstate and let the logic of the recursive backtracker do its work.
+                // since if the next has no possibility of using an empty string transition it will result in false which should be the case.
+
+                // We only get here if we have an empty string
+                belongsToLanguage(currentState, currentWord + "_", wordObject);
             }
         } else {
             char currentCharacter = currentWord.charAt(0);
-            // Should be sorted with _ at the end of list for convenience
             List<Transition> possibleTransitions = stateDiagram.getTransitions(currentState);
 
             for (Transition possibleTransition: possibleTransitions) {
-                // Or if we have an unvisited empty character '_' we can take it.
+                State destination = possibleTransition.getDestination();
+
                 if (possibleTransition.getLabel().equals(currentCharacter)) {
-                    State destination = possibleTransition.getDestination();
                     String remainder = currentWord.substring(1);
-                    return true && belongsToLanguage(destination, remainder);
+                    // Op een dood eind komt ie hier uit op false en als die zou returnen, stopt
+                    // de verdere execution i.p.v. dat de volgende nog wordt nagekeken.
+                    // dus of ik geef het word object door en verander tot true als
+                    // we de base case rijken, maar dan zouden we alsnog
+                    // eerder uit de recursieve functie willen gaan voor efficientie.
+                    belongsToLanguage(destination, remainder, wordObject);
+                } else if (isEmptyStringTransitionWithDifferentDestination(possibleTransition)) {
+                    belongsToLanguage(destination, currentWord, wordObject);
+                }
+
+                if (wordObject.doesBelongToLanguage()) {
+                    break;
                 }
             }
         }
+    }
 
-        return false;
+    private boolean isEmptyStringTransitionWithDifferentDestination(Transition transition) {
+        return transition.getLabel() == '_'
+                && !(transition.getSource().equals(transition.getDestination()));
     }
 }
