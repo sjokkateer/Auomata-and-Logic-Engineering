@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Set;
 
 public class App extends JFrame {
@@ -28,15 +29,19 @@ public class App extends JFrame {
     private JButton addWordBtn;
     private JLabel wordLb;
     private JScrollPane wordListScrollPane;
+    private JButton openImageBtn;
     private JFileChooser fileChooser;
 
     private Automaton automaton;
+    private Desktop desktop;
 
     public static final int WIDTH = 650;
     public static final int HEIGHT = 350;
 
     public App(String title) {
         super(title);
+
+        desktop = Desktop.getDesktop();
 
         fileChooser = new JFileChooser(new File(AutomatonFileManager.getResourceFolder()));
         fileChooser.setDialogTitle("Choose Automaton Input File");
@@ -64,6 +69,7 @@ public class App extends JFrame {
                     displayWords();
 
                     enableWordFormControls();
+                    openImageBtn.setEnabled(true);
                 }
             }
         });
@@ -76,6 +82,16 @@ public class App extends JFrame {
                     Word word = new Word(wordContent);
                     automaton.getWordValidator().validate(word);
                     wordListModel.addElement(word);
+                }
+            }
+        });
+        openImageBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    desktop.open(new File(AutomatonFileManager.getDotFileImagePath()));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
