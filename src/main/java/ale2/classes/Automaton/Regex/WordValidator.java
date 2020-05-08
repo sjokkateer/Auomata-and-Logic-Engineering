@@ -35,8 +35,37 @@ public class WordValidator {
         // We should exit this method (the word will remain false (not belonging to the language)
         // in case there is no final/accepting state in the automata and or it contains letters not belonging
         // to the alphabet.
+        if (areLettersInAlphabet(word) && stateDiagramHasAcceptingState()) {
+            belongsToLanguage(initialState, word.getWord(), word);
+        }
+    }
 
-        belongsToLanguage(initialState, word.getWord(), word);
+    // Maybe we need to ask whether or not the empty character _ is represented by an empty string word or not.
+    private boolean areLettersInAlphabet(Word word) {
+        boolean result = true;
+        String wordContent = word.getWord();
+
+        for (int i = 0; i < wordContent.length(); i++) {
+            result = result && isLetterInAlphabet(wordContent.charAt(i));
+        }
+
+        return result;
+    }
+
+    private boolean isLetterInAlphabet(char letter) {
+        for (char alphabetCharacter: alphabet) {
+            if (letter == alphabetCharacter) return true;
+        }
+
+        return false;
+    }
+
+    private boolean stateDiagramHasAcceptingState() {
+        for (State state: stateDiagram.getStates()) {
+            if (state.isAccepting()) return true;
+        }
+
+        return false;
     }
 
     private void belongsToLanguage(State currentState, String currentWord, Word wordObject) {
