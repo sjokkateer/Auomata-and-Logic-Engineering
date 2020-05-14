@@ -11,13 +11,15 @@ import java.util.Stack;
 
 public class Parser {
     private static final String SPECIAL_SYMBOLS = ".|*";
+
+    private static String VALID_CHARACTERS = SPECIAL_SYMBOLS + ", ()";
+
     private Stack<Character> symbolStack;
     private Stack<StateDiagram> stateDiagramsStack;
 
-    private State source;
-    private State sink;
+    private int stateCounter;
 
-    public State parse(String regularExpression) throws RegularExpressionException {
+    public StateDiagram parse(String regularExpression) throws RegularExpressionException {
         regularExpression = regularExpression.toLowerCase();
         checkMatchingNumberOfParenthesis(regularExpression);
         checkLegalCharacters(regularExpression);
@@ -25,10 +27,11 @@ public class Parser {
         symbolStack = new Stack<>();
         stateDiagramsStack = new Stack<>();
 
+        stateCounter = 0;
         parseHelper(regularExpression);
 
-        // Once we get hear should wrap source and sink with initial and accepting respectively.
-        return source;
+        // The last state diagram on the stack should represent the input expression.
+        return stateDiagramsStack.pop();
     }
 
     private void checkMatchingNumberOfParenthesis(String regularExpression) throws ParenthesisMismatchException {
@@ -50,29 +53,17 @@ public class Parser {
         // Maybe this should be made a little smarter since now, *((x, y)) would pass as valid because it has equal
         // opening and closing.
         // But for this to work properly, first a special symbol comes, followed by an opening and at some point a closing.
-
     }
 
     private void checkLegalCharacters(String regularExpression) throws IllegalCharacterInRegularExpressionException {
         for (char c: regularExpression.toCharArray()) {
-            if (Character.isAlphabetic(c)) {
+            if (!Character.isLetter(c) && VALID_CHARACTERS.indexOf(c) < 0) {
                 throw new IllegalCharacterInRegularExpressionException(c + " is not a valid character for a regular expression");
             }
         }
     }
 
     private void parseHelper(String regularExpression) {
-        // Elk character parsen
-        // als dit een speciaal symbool is maken we een state aan
-        // *(|(w,x))
-        // * is special symbol thus we create a star matching state
-        // we return the point of insertion?
-        // the last symbol on the stack will get an initial state and accepting state
-        // So every time we reach and check a special symbol we set the potential source and sink
-        // and finally we wrap them in an additional state.
-
-        // Any letter is a transition.
-        // so only a letter will result in a transition object, but we will ignore the states connecting them initially.
         char targetCharacter = regularExpression.charAt(0);
 
         if (isSpecialSymbol(targetCharacter)) {
@@ -99,14 +90,18 @@ public class Parser {
     private void processExpression(char targetCharacter) {
         List<Transition> transitionList = new ArrayList<>();
 
-        State source = new State("");
-        State destination = new State("");
+        State source = createStateWithTemporarySymbol();
+        State destination = createStateWithTemporarySymbol();
 
         Transition transition = new Transition(source, targetCharacter, destination);
         transitionList.add(transition);
         StateDiagram stateDiagram = StateDiagram.fromTransitions(transitionList);
 
         stateDiagramsStack.push(stateDiagram);
+    }
+
+    private State createStateWithTemporarySymbol() {
+        return new State(String.valueOf(++stateCounter));
     }
 
     private boolean isSpecialSymbol(char targetCharacter) {

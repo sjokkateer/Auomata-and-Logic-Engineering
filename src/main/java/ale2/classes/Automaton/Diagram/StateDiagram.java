@@ -20,8 +20,18 @@ public class StateDiagram implements IDotFile {
 
     public static StateDiagram fromTransitions(List<Transition> transitionList) {
         // For all transitions we add the sources and destinations to states set
-        // We also add all transitions to the hasmap
-        return null;
+        // We also add all transitions to the hashmap
+        StateDiagram stateDiagram = new StateDiagram();
+        Set<State> states = stateDiagram.getStates();
+
+        for(Transition transition: transitionList) {
+            states.add(transition.getSource());
+            states.add(transition.getDestination());
+
+            stateDiagram.addTransitionToCollection(transition);
+        }
+
+        return stateDiagram;
     }
 
     private void createStates(List<String> states) {
@@ -69,7 +79,7 @@ public class StateDiagram implements IDotFile {
         }
     }
 
-    private void addTransitionToCollection(Transition transition) {
+    public void addTransitionToCollection(Transition transition) {
         List<Transition> transitionList;
         State source = transition.getSource();
 
