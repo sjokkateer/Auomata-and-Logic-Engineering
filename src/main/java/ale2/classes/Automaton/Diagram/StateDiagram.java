@@ -21,7 +21,7 @@ public class StateDiagram implements IDotFile {
             v = new State(states.get(i));
 
             if (i == 0) {
-                v = new Initial(v);
+                v.setInitial();
             }
 
             this.states.add(v);
@@ -37,8 +37,7 @@ public class StateDiagram implements IDotFile {
 
     private void attemptToWrapWithAcceptingState(State state, List<String> acceptingStates) {
         if (acceptingStates.contains(state.getSymbol())) {
-            states.remove(state);
-            states.add(new Accepting(state));
+            state.setAccepting();
         }
     }
 

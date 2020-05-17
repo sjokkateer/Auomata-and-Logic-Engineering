@@ -6,11 +6,17 @@ import java.util.Objects;
 
 public class State implements IDotFile {
     private String symbol;
+    private boolean initial;
+    private boolean accepting;
 
     public State()
-    { }
+    {
+        initial = false;
+        accepting = false;
+    }
 
     public State(String symbol) {
+        this();
         this.symbol = symbol;
     }
 
@@ -22,16 +28,30 @@ public class State implements IDotFile {
         return "\"" + getSymbol() + "\" [shape=" + getShape() + "]\n";
     }
 
-    protected String getShape() {
-        return "circle";
+    private String getShape() {
+        String shape = "circle";
+
+        if (isAccepting()) {
+            shape = "double" + shape;
+        }
+
+        return shape;
     }
 
     public boolean isInitial() {
-        return false;
+        return initial;
+    }
+
+    public void setInitial() {
+        initial = true;
     }
 
     public boolean isAccepting() {
-        return false;
+        return accepting;
+    }
+
+    public void setAccepting() {
+        accepting = true;
     }
 
     @Override
