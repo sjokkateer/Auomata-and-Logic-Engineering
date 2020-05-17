@@ -8,6 +8,9 @@ import ale2.classes.Automaton.Regex.Word;
 import ale2.classes.Automaton.Regex.WordValidator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +55,16 @@ public class Automaton implements IDotFile {
         Set<Word> wordCollection = createWordCollection(inputFileProcessor.getWords());
 
         return new Automaton(alphabet, stateDiagram, wordCollection);
+    }
+
+    public static Automaton fromStateDiagram(StateDiagram stateDiagram) {
+        Set<Character> alphabet = new HashSet<Character>();
+
+        for (Transition t: stateDiagram.getAllTransitions()) {
+            alphabet.add(t.getLabel());
+        }
+
+        return new Automaton(alphabet, stateDiagram, new HashSet<Word>());
     }
 
     private static Set<Character> createAlphabetSet(String alphabet) {
@@ -120,5 +133,96 @@ public class Automaton implements IDotFile {
         result += "}\n";
 
         return result;
+    }
+
+    public void exportToFile() {
+        PrintWriter writer = null;
+
+        try {
+            writer = new PrintWriter(AutomatonFileManager.getResourceFolder() + "/RE-export.txt", "UTF-8");
+            writeAlphabet(writer);
+            writeStates(writer);
+            writeAcceptingStates(writer);
+            writeTransitions(writer);
+            writeIfDfa(writer);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+
+    }
+
+    private void writeIfDfa(PrintWriter writer) {
+        String result = "dfa: ";
+
+        if (isDFA()) {
+            result += "y";
+        } else {
+            result += "n";
+        }
+
+        writer.println(result);
+    }
+
+    private void writeTransitions(PrintWriter writer) {
+        String result = "transitions:\n";
+
+        for (Transition transition: stateDiagram.getAllTransitions()) {
+            result += transition + "\n";
+        }
+
+        result += "end.\n";
+
+        writer.println(result);
+    }
+
+    private void writeAcceptingStates(PrintWriter writer) {
+        String result = "final: ";
+
+        for (State state: stateDiagram.getStates()) {
+            if (state.isAccepting()) {
+                result += state.getSymbol() + ",";
+            }
+        }
+
+        result = trimTrailingCharacter(result);
+
+        writer.println(result);
+    }
+
+    private String trimTrailingCharacter(String s) {
+        return s.substring(0, s.length() - 1);
+    }
+
+    private void writeStates(PrintWriter writer) {
+        String result = "states: ";
+        State initial = stateDiagram.getInitialState();
+        result += initial.getSymbol() + ",";
+
+        for (State state: stateDiagram.getStates()) {
+            if (!state.isInitial()) {
+                result += state.getSymbol() + ",";
+            }
+        }
+
+        // Trim trailing ','
+        result = trimTrailingCharacter(result);
+
+        writer.println(result);
+    }
+
+    private void writeAlphabet(PrintWriter writer) {
+        String result = "alphabet: ";
+
+        for (Character letter: alphabet) {
+            result += letter;
+        }
+
+        writer.println(result);
     }
 }

@@ -166,4 +166,13 @@ public class StateDiagram implements IDotFile {
     public List<Transition> getTransitions(State state) {
         return transitions.getOrDefault(state, new ArrayList<>());
     }
+
+    public void relabel() {
+        // Apply a BFS traversal starting at the initial.
+        // int stateCounter = 0;
+
+        // State initialState = getInitialState();
+
+
+    }
 }

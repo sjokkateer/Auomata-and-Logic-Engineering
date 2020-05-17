@@ -40,6 +40,9 @@ public class Parser {
         source.setInitial();
         sink.setAccepting();
 
+        // Thus maybe the relabeling should actually happen here.
+        finalStateDiagram.relabel();
+
         return finalStateDiagram;
     }
 

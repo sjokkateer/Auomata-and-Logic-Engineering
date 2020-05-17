@@ -2,7 +2,10 @@ package ale2;
 
 import ale2.classes.Automaton.Automaton;
 import ale2.classes.Automaton.AutomatonFileManager;
+import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
+import ale2.classes.Automaton.Exceptions.RegularExpressionException;
+import ale2.classes.Automaton.Regex.Parser;
 import ale2.classes.Automaton.Regex.Word;
 
 import javax.swing.*;
@@ -30,6 +33,8 @@ public class App extends JFrame {
     private JLabel wordLb;
     private JScrollPane wordListScrollPane;
     private JButton openImageBtn;
+    private JTextField regexTextField;
+    private JButton parseRegexBtn;
     private JFileChooser fileChooser;
 
     private Automaton automaton;
@@ -38,13 +43,20 @@ public class App extends JFrame {
     public static final int WIDTH = 650;
     public static final int HEIGHT = 350;
 
+    private Parser parser;
+
     public App(String title) {
         super(title);
+
+        //
+        AutomatonFileManager.setDotBasePath(AutomatonFileManager.getResourceFolder());
 
         desktop = Desktop.getDesktop();
 
         fileChooser = new JFileChooser(new File(AutomatonFileManager.getResourceFolder()));
         fileChooser.setDialogTitle("Choose Automaton Input File");
+
+        parser = new Parser();
     }
 
     public App() {
@@ -63,13 +75,7 @@ public class App extends JFrame {
                 createAutomatonFromFile();
 
                 if (automaton != null) {
-                    displayAlphabet();
-                    createDiagramImage();
-                    displayIfDFA();
-                    displayWords();
-
-                    enableWordFormControls();
-                    openImageBtn.setEnabled(true);
+                    onAutomatonLoaded();
                 }
             }
         });
@@ -95,6 +101,35 @@ public class App extends JFrame {
                 }
             }
         });
+        parseRegexBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String regex = regexTextField.getText();
+
+                if (!regex.equals("")) {
+                    try {
+                        StateDiagram stateDiagram = parser.parse(regex);
+
+                        automaton = Automaton.fromStateDiagram(stateDiagram);
+                        automaton.exportToFile();
+
+                        onAutomatonLoaded();
+                    } catch (RegularExpressionException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void onAutomatonLoaded() {
+        displayAlphabet();
+        createDiagramImage();
+        displayIfDFA();
+        displayWords();
+
+        enableWordFormControls();
+        openImageBtn.setEnabled(true);
     }
 
     private void enableWordFormControls() {

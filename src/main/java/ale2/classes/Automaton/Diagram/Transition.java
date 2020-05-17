@@ -51,4 +51,9 @@ public class Transition implements IDotFile {
     public Character getLabel() {
         return label;
     }
+
+    @Override
+    public String toString() {
+        return getSource().getSymbol() + "," + getLabel() + " --> " + getDestination().getSymbol();
+    }
 }
