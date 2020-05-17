@@ -19,7 +19,23 @@ public class ParserTest {
     public void parseUnionExpressionShouldReturnAStateDiagramMatchingAUnionExpression() throws RegularExpressionException {
         Parser parser = new Parser();
         StateDiagram stateDiagram = parser.parse("|(a, b)");
+    }
 
+    @Test
+    public void parseConcatenationExpressionShouldReturnAStateDiagramMatchingAConcatenationExpression() throws RegularExpressionException {
+        Parser parser = new Parser();
+        StateDiagram stateDiagram = parser.parse(".(a, b)");
+    }
 
+    @Test
+    public void parseKleeneStarExpressionShouldReturnAStateDiagramMatchingAKleeneStarExpression() throws RegularExpressionException {
+        Parser parser = new Parser();
+        StateDiagram stateDiagram = parser.parse("*(a)");
+    }
+
+    @Test
+    public void parseKleeneStarWithNestedExpressionShouldReturnAStateDiagramMatchingAKleeneStarWithNestedExpression() throws RegularExpressionException {
+        Parser parser = new Parser();
+        StateDiagram stateDiagram = parser.parse("*(.(a, b))");
     }
 }

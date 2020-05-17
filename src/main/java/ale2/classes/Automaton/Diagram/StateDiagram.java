@@ -1,10 +1,12 @@
 package ale2.classes.Automaton.Diagram;
 
+import ale2.classes.Automaton.Diagram.Thompson.IThompsonConstructionStrategy;
 import ale2.classes.Automaton.IDotFile;
 
 import java.util.*;
 
 public class StateDiagram implements IDotFile {
+    private static IThompsonConstructionStrategy thompsonConstructionStrategy;
     private Set<State> states = new HashSet<>();
     private HashMap<State, List<Transition>> transitions = new HashMap<>();
 
@@ -32,6 +34,14 @@ public class StateDiagram implements IDotFile {
         }
 
         return stateDiagram;
+    }
+
+    public static void setThompsonConstructionStrategy(IThompsonConstructionStrategy strategy) {
+        thompsonConstructionStrategy = strategy;
+    }
+
+    public static StateDiagram create() {
+        return thompsonConstructionStrategy.create();
     }
 
     private void createStates(List<String> states) {
@@ -107,6 +117,16 @@ public class StateDiagram implements IDotFile {
             }
         }
         return null;
+    }
+
+    public List<Transition> getAllTransitions() {
+        List<Transition> allTransitions = new ArrayList<>();
+
+        for(State state: getStates()) {
+            allTransitions.addAll(getTransitions(state));
+        }
+
+        return allTransitions;
     }
 
     @Override

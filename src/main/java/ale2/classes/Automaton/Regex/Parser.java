@@ -1,6 +1,7 @@
 package ale2.classes.Automaton.Regex;
 
 import ale2.classes.Automaton.Diagram.*;
+import ale2.classes.Automaton.Diagram.Thompson.*;
 import ale2.classes.Automaton.Exceptions.IllegalCharacterInRegularExpressionException;
 import ale2.classes.Automaton.Exceptions.ParenthesisMismatchException;
 import ale2.classes.Automaton.Exceptions.RegularExpressionException;
@@ -28,10 +29,18 @@ public class Parser {
         stateDiagramsStack = new Stack<>();
 
         stateCounter = 0;
+
         parseHelper(regularExpression);
 
-        // The last state diagram on the stack should represent the input expression.
-        return stateDiagramsStack.pop();
+        StateDiagram finalStateDiagram = stateDiagramsStack.pop();
+
+        State source = AbstractThompsonConstructionStrategy.getSource(finalStateDiagram);
+        State sink = AbstractThompsonConstructionStrategy.getSink(finalStateDiagram);
+
+        source.setInitial();
+        sink.setAccepting();
+
+        return finalStateDiagram;
     }
 
     private void checkMatchingNumberOfParenthesis(String regularExpression) throws ParenthesisMismatchException {
@@ -129,52 +138,57 @@ public class Parser {
     }
 
     private void createUnionExpression() {
-        State newSource = new State("");
-        State newSink = new State("");
+        StateDiagram stateDiagramB = stateDiagramsStack.pop();
+        StateDiagram stateDiagramA = stateDiagramsStack.pop();
 
-//        // Take off the second pair.
-//        State sinkPairTwo = createdSourcesAndSinksStack.pop();
-//        State sourcePairTwo = createdSourcesAndSinksStack.pop();
-//
-//        // Take off first pair.
-//        State sinkPairOne = createdSourcesAndSinksStack.pop();
-//        State sourcePairOne = createdSourcesAndSinksStack.pop();
-//
-//        // Create the required empty string transitions.
-//        new Transition(newSource, Transition.EMPTY, sourcePairOne);
-//        new Transition(sinkPairOne, Transition.EMPTY, newSink);
-//
-//        new Transition(newSource, Transition.EMPTY, sourcePairTwo);
-//        new Transition(sinkPairTwo, Transition.EMPTY, newSink);
-//
-//        // Finally put the new source and sink on top of the stack.
-//        createdSourcesAndSinksStack.push(newSource);
-//        createdSourcesAndSinksStack.push(newSink);
+        StateDiagram.setThompsonConstructionStrategy(
+            new UnionExpressionStrategy(
+                    stateDiagramA,
+                    stateDiagramB,
+                    stateCounter,
+                    new StateCounterListener() {
+                        @Override
+                        public void onStateDiagramCreation(int stateCounter) {
+                            updateStateCounter(stateCounter);
+                        }
+                    })
+        );
+
+        StateDiagram unionExpression = StateDiagram.create();
+
+        addNewStateDiagramToStack(unionExpression);
+    }
+
+    private void updateStateCounter(int stateCounter) {
+        this.stateCounter = stateCounter;
     }
 
     private void createConcatenationExpression() {
-        // Two transitions.
-        // For this we use the original source and sink of the pairs.
+        StateDiagram stateDiagramB = stateDiagramsStack.pop();
+        StateDiagram stateDiagramA = stateDiagramsStack.pop();
 
-//        // Take off the second pair.
-//        State sinkPairTwo = createdSourcesAndSinksStack.pop();
-//        State sourcePairTwo = createdSourcesAndSinksStack.pop();
-//
-//        // Take off first pair.
-//        State sinkPairOne = createdSourcesAndSinksStack.pop();
-//        State sourcePairOne = createdSourcesAndSinksStack.pop();
-//
-//        // Add the first pair's sink to be the source of the second pair.
-//        sourcePairTwo sinkPairOne
+        StateDiagram.setThompsonConstructionStrategy(new ConcatenationExpressionStrategy(stateDiagramA, stateDiagramB));
+        StateDiagram concatenationExpression = StateDiagram.create();
 
-        // Push the source of the first pair onto the stack
+        addNewStateDiagramToStack(concatenationExpression);
+    }
 
-        // Push the sink of the second pair onto the stack.
-
+    private void addNewStateDiagramToStack(StateDiagram stateDiagram) {
+        stateDiagramsStack.push(stateDiagram);
     }
 
     private void createKleeneStarExpression() {
-        // one transition pair.
+        StateDiagram stateDiagram = stateDiagramsStack.pop();
 
+        StateDiagram.setThompsonConstructionStrategy(new KleeneStarExpressionStrategy(stateDiagram, stateCounter, new StateCounterListener() {
+            @Override
+            public void onStateDiagramCreation(int stateCounter) {
+                updateStateCounter(stateCounter);
+            }
+        }));
+
+        StateDiagram kleeneStarExpression = StateDiagram.create();
+
+        addNewStateDiagramToStack(kleeneStarExpression);
     }
 }
