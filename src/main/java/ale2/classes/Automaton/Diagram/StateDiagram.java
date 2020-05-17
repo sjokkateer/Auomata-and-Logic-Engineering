@@ -169,10 +169,26 @@ public class StateDiagram implements IDotFile {
 
     public void relabel() {
         // Apply a BFS traversal starting at the initial.
-        // int stateCounter = 0;
+        int stateCounter = 0;
 
-        // State initialState = getInitialState();
+        List<State> queue = new ArrayList<>();
+        queue.add(getInitialState());
 
+        State current;
+        List<Transition> currentTransitions;
 
+        while (queue.size() > 0) {
+            current = queue.get(0);
+
+            currentTransitions = getTransitions(current);
+
+            for (Transition transition: currentTransitions) {
+                queue.add(transition.getDestination());
+            }
+
+            queue.remove(0);
+
+            current.setSymbol("s" + ++stateCounter);
+        }
     }
 }

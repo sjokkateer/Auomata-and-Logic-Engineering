@@ -48,10 +48,10 @@ public class App extends JFrame {
     public App(String title) {
         super(title);
 
-        //
-        AutomatonFileManager.setDotBasePath(AutomatonFileManager.getResourceFolder());
-
         desktop = Desktop.getDesktop();
+
+        // Maybe come up with something smarter later on.
+        AutomatonFileManager.setDotBasePath(AutomatonFileManager.getResourceFolder());
 
         fileChooser = new JFileChooser(new File(AutomatonFileManager.getResourceFolder()));
         fileChooser.setDialogTitle("Choose Automaton Input File");

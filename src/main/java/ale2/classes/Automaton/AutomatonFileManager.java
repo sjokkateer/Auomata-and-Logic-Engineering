@@ -36,7 +36,13 @@ public class AutomatonFileManager {
     }
 
     public static String getResourceFolder() {
-        return System.getProperty("user.dir") + RESOURCE_FOLDER;
+        String pathToFiles = System.getProperty("user.dir");
+
+        if((new File(pathToFiles + RESOURCE_FOLDER)).exists()) {
+            pathToFiles += RESOURCE_FOLDER;
+        }
+
+        return pathToFiles;
     }
 
     public static String getDotFilePath() {

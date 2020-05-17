@@ -24,6 +24,10 @@ public class State implements IDotFile {
         return symbol;
     }
 
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
     public String getDotFileString() {
         return "\"" + getSymbol() + "\" [shape=" + getShape() + "]\n";
     }
