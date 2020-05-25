@@ -34,7 +34,6 @@ public class LanguageChecker {
     private void generateWordsRecursively(State state, String word) {
         state.setVisited(true);
 
-        // Try to go as deep as possible first
         for (Transition t: stateDiagram.getTransitions(state)) {
             State destination = t.getDestination();
 
@@ -43,9 +42,13 @@ public class LanguageChecker {
             }
         }
 
-        // Then once we exhausted our options, check if we can make a word.
+        state.setVisited(false);
+
         if (state.isAccepting() && !word.equals("")) {
-            languageWords.add(new Word(word));
+            Word w = new Word(word);
+            w.setBelongsToLanguage(true);
+
+            languageWords.add(w);
         }
     }
 
@@ -147,11 +150,9 @@ public class LanguageChecker {
         currentPath.add(currentState);
 
         for (Transition t: stateDiagram.getTransitions(currentState)) {
-            // And probably what needs to be added is if the visited is already in the path.
             State destination = t.getDestination();
 
-            // Only then do we have a cycle, otherwise we could also have visited
-            // the state without result.
+            // Check whether it is a back edge, otherwise we can ignore it.
             if (destination.isVisited() && isBackEdge(destination, currentPath)) {
                 currentPath.add(t.getDestination());
                 cycles.add(currentPath);

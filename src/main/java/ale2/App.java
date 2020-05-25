@@ -44,6 +44,8 @@ public class App extends JFrame {
     private JScrollPane languageScrollPane;
     private JPanel languagePanel;
     private JLabel infinityLabel;
+    private JLabel wordsLabel;
+    private JLabel languageLabel;
     private JFileChooser fileChooser;
 
     private Automaton automaton;
@@ -122,8 +124,6 @@ public class App extends JFrame {
                     try {
                         StateDiagram stateDiagram = parser.parse(regex);
 
-                        displayLanguageWords();
-
                         automaton = Automaton.fromStateDiagram(stateDiagram);
                         automaton.exportToFile();
 
@@ -143,16 +143,17 @@ public class App extends JFrame {
         languageChecker.setStateDiagram(automaton.getStateDiagram());
         List<Word> languageWords = languageChecker.getWords();
 
-        String infiniteOrFinite= "infinite";
+        String infiniteOrFinite= "Infinite";
 
         if (languageWords.size() > 0) {
             for (Word w: languageWords) {
                 languageWordListModel.addElement(w);
             }
 
-            infiniteOrFinite = "finite";
+            infiniteOrFinite = "Finite";
         }
 
+        languageWordList.setModel(languageWordListModel);
         infinityLabel.setText(infiniteOrFinite);
     }
 
