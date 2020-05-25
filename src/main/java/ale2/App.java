@@ -5,6 +5,7 @@ import ale2.classes.Automaton.AutomatonFileManager;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
 import ale2.classes.Automaton.Exceptions.RegularExpressionException;
+import ale2.classes.Automaton.LanguageChecker;
 import ale2.classes.Automaton.Regex.Parser;
 import ale2.classes.Automaton.Regex.Word;
 
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Set;
+import java.util.List;
 
 public class App extends JFrame {
     private JPanel mainPanel;
@@ -35,9 +37,17 @@ public class App extends JFrame {
     private JButton openImageBtn;
     private JTextField regexTextField;
     private JButton parseRegexBtn;
+
+    private JList languageWordList;
+    private DefaultListModel languageWordListModel;
+
+    private JScrollPane languageScrollPane;
+    private JPanel languagePanel;
+    private JLabel infinityLabel;
     private JFileChooser fileChooser;
 
     private Automaton automaton;
+    private LanguageChecker languageChecker;
     private Desktop desktop;
 
     public static final int WIDTH = 650;
@@ -47,6 +57,8 @@ public class App extends JFrame {
 
     public App(String title) {
         super(title);
+
+        languageChecker = new LanguageChecker();
 
         desktop = Desktop.getDesktop();
 
@@ -110,6 +122,8 @@ public class App extends JFrame {
                     try {
                         StateDiagram stateDiagram = parser.parse(regex);
 
+                        displayLanguageWords();
+
                         automaton = Automaton.fromStateDiagram(stateDiagram);
                         automaton.exportToFile();
 
@@ -122,11 +136,33 @@ public class App extends JFrame {
         });
     }
 
+    private void displayLanguageWords() {
+        infinityLabel.setText("");
+        languageWordListModel = new DefaultListModel();
+
+        languageChecker.setStateDiagram(automaton.getStateDiagram());
+        List<Word> languageWords = languageChecker.getWords();
+
+        String infiniteOrFinite= "infinite";
+
+        if (languageWords.size() > 0) {
+            for (Word w: languageWords) {
+                languageWordListModel.addElement(w);
+            }
+
+            infiniteOrFinite = "finite";
+        }
+
+        infinityLabel.setText(infiniteOrFinite);
+    }
+
     private void onAutomatonLoaded() {
         displayAlphabet();
         createDiagramImage();
         displayIfDFA();
         displayWords();
+
+        displayLanguageWords();
 
         enableWordFormControls();
         openImageBtn.setEnabled(true);

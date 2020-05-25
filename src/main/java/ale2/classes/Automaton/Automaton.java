@@ -67,6 +67,10 @@ public class Automaton implements IDotFile {
         return new Automaton(alphabet, stateDiagram, new HashSet<Word>());
     }
 
+    public StateDiagram getStateDiagram() {
+        return stateDiagram;
+    }
+
     private static Set<Character> createAlphabetSet(String alphabet) {
         Set<Character> alphabetSet = new HashSet<>();
 

@@ -9,10 +9,14 @@ public class State implements IDotFile {
     private boolean initial;
     private boolean accepting;
 
+    private boolean visited;
+
     public State()
     {
         initial = false;
         accepting = false;
+
+        visited = false;
     }
 
     public State(String symbol) {
@@ -40,6 +44,14 @@ public class State implements IDotFile {
         }
 
         return shape;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
+    public boolean isVisited() {
+        return visited;
     }
 
     public boolean isInitial() {
