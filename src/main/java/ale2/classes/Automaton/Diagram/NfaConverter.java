@@ -1,13 +1,68 @@
 package ale2.classes.Automaton.Diagram;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class NfaConverter {
-    // Class responsible for converting NFA to DFA.
+    private StateDiagram stateDiagram;
+    private Set<State> epsilonClosures;
 
-    // A method that checks for epsilon transitions
-    // and returns the set of all states that are reachable over epsilon transitions
-    // thus when current state under investigation (s1) has empty transition to s2 and s2 empty to s3, we get s1, s2, s3
-    // as the new state.
-    // We can use the earlier created transition function for achieving this.
+    public NfaConverter(StateDiagram stateDiagram) {
+        this.stateDiagram = stateDiagram;
+        epsilonClosures = new HashSet<>();
 
-    //
+        createEpsilonClosures();
+    }
+
+    public Set<State> getEpsilonClosures() {
+        return epsilonClosures;
+    }
+
+    private void createEpsilonClosures() {
+        for (State state : stateDiagram.getStates()) {
+            EpsilonClosure epsilonClosure = createEpsilonClosureFrom(state);
+            epsilonClosures.add(epsilonClosure);
+        }
+    }
+
+    private EpsilonClosure createEpsilonClosureFrom(State state) {
+        Set<State> statesInClosure = new HashSet<>();
+        statesInClosure.add(state);
+
+        List<State> queue = new ArrayList<>();
+
+        int head = 0;
+        queue.add(state);
+        State current;
+
+        while (queue.size() > 0) {
+            current = queue.get(head);
+            queue.remove(head);
+
+            Set<State> destinations = stateDiagram.getDestinations(current, '_');
+
+            for (State destination : destinations) {
+                if (!statesInClosure.contains(destination)) {
+                    queue.add(destination);
+                    statesInClosure.add(destination);
+                }
+            }
+        }
+
+        return new EpsilonClosure(state, statesInClosure);
+    }
+
+    public EpsilonClosure getEpsilonClosureOf(State state) {
+        for (State epsilonClosure: epsilonClosures) {
+            EpsilonClosure eClosure = (EpsilonClosure) epsilonClosure;
+
+            if (eClosure.isClosureOf(state)) {
+                return eClosure;
+            }
+        }
+
+        return null;
+    }
 }

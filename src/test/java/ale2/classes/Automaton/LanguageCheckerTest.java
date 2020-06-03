@@ -68,6 +68,35 @@ public class LanguageCheckerTest {
     }
 
     @Test
+    // ADJUST
+    public void isFinite_infiniteLanguageWithEpsilonCycleCanTerminate_falseShouldBeReturned() {
+        List<Transition> transitions = new ArrayList<>();
+        State s1 = new State("1");
+        State s2 = new State("2");
+        State s3 = new State("3");
+        State s4 = new State("4");
+
+        s1.setInitial();
+        s4.setAccepting();
+
+        transitions.add(new Transition(s1, 'a', s2));
+        transitions.add(new Transition(s2, 'b', s3));
+        transitions.add(new Transition(s3, '_', s1));
+        transitions.add(new Transition(s3, '_', s4));
+
+        StateDiagram sd = StateDiagram.fromTransitions(transitions);
+
+        LanguageChecker checker = new LanguageChecker();
+        checker.setStateDiagram(sd);
+
+        // Act
+        boolean isFinite = checker.isFinite();
+
+        // Assert
+        assertFalse("This state diagram is infinite but got true returned!", isFinite);
+    }
+
+    @Test
     public void isFinite_infiniteLanguageSinceOneAcceptingStateInOneOfTheCycles_falseShouldBeReturned() {
         // Arrange
         List<Transition> transitions = new ArrayList<>();
