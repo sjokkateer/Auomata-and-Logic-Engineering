@@ -159,36 +159,37 @@ public class StateDiagram implements IDotFile {
         return null;
     }
 
+    public Set<State> getDestinations(State state, char letter) {
+        if (state == null) {
+            throw new IllegalArgumentException("A state must be given!");
+        }
+
+        List<Transition> transitionsOfState = getTransitions(state);
+
+        return getDestinationsOverLetter(transitionsOfState, letter);
+    }
+
+    private Set<State> getDestinationsOverLetter(List<Transition> transitions, char letter) {
+        if (transitions == null) {
+            throw new IllegalArgumentException("List of transitions must not be null!");
+        }
+
+        Set<State> destinations = new HashSet<>();
+
+        for (Transition transition : transitions) {
+            if (transition.getLabel() == letter) {
+                destinations.add(transition.getDestination());
+            }
+        }
+
+        return destinations;
+    }
+
     public Set<State> getStates() {
         return states;
     }
 
     public List<Transition> getTransitions(State state) {
         return transitions.getOrDefault(state, new ArrayList<>());
-    }
-
-    public void relabel() {
-        // Apply a BFS traversal starting at the initial.
-        int stateCounter = 0;
-
-        List<State> queue = new ArrayList<>();
-        queue.add(getInitialState());
-
-        State current;
-        List<Transition> currentTransitions;
-
-        while (queue.size() > 0) {
-            current = queue.get(0);
-
-            currentTransitions = getTransitions(current);
-
-            for (Transition transition: currentTransitions) {
-                queue.add(transition.getDestination());
-            }
-
-            queue.remove(0);
-
-            current.setSymbol("s" + ++stateCounter);
-        }
     }
 }
