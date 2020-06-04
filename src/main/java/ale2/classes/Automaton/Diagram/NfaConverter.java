@@ -1,23 +1,25 @@
 package ale2.classes.Automaton.Diagram;
 
-import java.util.*;
-
 public class NfaConverter {
-    private StateDiagram stateDiagram;
+    private StateDiagram originalStateDiagram;
     private NfaToDfaStrategyBase conversionStrategy;
+    private StateDiagram convertedStateDiagram;
 
     public NfaConverter(StateDiagram stateDiagram) {
-        this.stateDiagram = stateDiagram;
+        originalStateDiagram = stateDiagram;
 
-        // Or factory method on the base
         conversionStrategy = NfaToDfaStrategyBase.determineStrategy(stateDiagram);
+    }
 
-//        if (alphabet.size() == 0) {
-//            throw new IllegalArgumentException("This can not be converted to a DFA!");
-//        }
+    public StateDiagram getOriginalStateDiagram() {
+        return originalStateDiagram;
     }
 
     public StateDiagram convertToDfa() {
-        return conversionStrategy.convertToDfa();
+        if (convertedStateDiagram == null) {
+            convertedStateDiagram = conversionStrategy.convertToDfa();
+        }
+
+        return convertedStateDiagram;
     }
 }

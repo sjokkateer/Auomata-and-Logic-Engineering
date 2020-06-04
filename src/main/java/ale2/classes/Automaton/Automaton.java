@@ -139,11 +139,11 @@ public class Automaton implements IDotFile {
         return result;
     }
 
-    public void exportToFile() {
+    public void exportToFile(String fileName) {
         PrintWriter writer = null;
 
         try {
-            writer = new PrintWriter(AutomatonFileManager.getResourceFolder() + "/RE-export.txt", "UTF-8");
+            writer = new PrintWriter(AutomatonFileManager.getResourceFolder() + "/" + fileName + ".txt", "UTF-8");
             writeAlphabet(writer);
             writeStates(writer);
             writeAcceptingStates(writer);

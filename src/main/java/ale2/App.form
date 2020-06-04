@@ -8,11 +8,6 @@
     <properties/>
     <border type="none"/>
     <children>
-      <vspacer id="6cae3">
-        <constraints>
-          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
       <component id="84065" class="javax.swing.JLabel" binding="openedFileLb">
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
@@ -179,6 +174,14 @@
         </constraints>
         <properties>
           <text value="Parse RE"/>
+        </properties>
+      </component>
+      <component id="116a9" class="javax.swing.JButton" binding="convertToDfaBtn">
+        <constraints>
+          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Convert to DFA"/>
         </properties>
       </component>
     </children>

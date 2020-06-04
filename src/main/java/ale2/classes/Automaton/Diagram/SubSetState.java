@@ -57,10 +57,10 @@ public class SubSetState extends State {
         String result = "{ ";
 
         for (State state: getStates()) {
-            result += state.getSymbol() + ", ";
+            result += state.getSymbol() + " ";
         }
 
-        return result.substring(0, result.length() - 2) + " }";
+        return result.substring(0, result.length() - 1) + " }";
     }
 
     @Override

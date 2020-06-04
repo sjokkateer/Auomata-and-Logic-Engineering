@@ -2,6 +2,7 @@ package ale2;
 
 import ale2.classes.Automaton.Automaton;
 import ale2.classes.Automaton.AutomatonFileManager;
+import ale2.classes.Automaton.Diagram.NfaConverter;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
 import ale2.classes.Automaton.Exceptions.RegularExpressionException;
@@ -17,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class App extends JFrame {
     private JLabel infinityLabel;
     private JLabel wordsLabel;
     private JLabel languageLabel;
+    private JButton convertToDfaBtn;
     private JFileChooser fileChooser;
 
     private Automaton automaton;
@@ -125,12 +128,26 @@ public class App extends JFrame {
                         StateDiagram stateDiagram = parser.parse(regex);
 
                         automaton = Automaton.fromStateDiagram(stateDiagram);
-                        automaton.exportToFile();
+                        automaton.exportToFile("RE-export");
 
                         onAutomatonLoaded();
                     } catch (RegularExpressionException ex) {
                         ex.printStackTrace();
                     }
+                }
+            }
+        });
+        convertToDfaBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (automaton != null) {
+                    NfaConverter nfaConverter = new NfaConverter(automaton.getStateDiagram());
+                    String now = LocalDateTime.now().toString();
+                    automaton.exportToFile( now + "_original");
+
+                    StateDiagram convertedStateDiagram = nfaConverter.convertToDfa();
+                    Automaton converted = Automaton.fromStateDiagram(convertedStateDiagram);
+                    converted.exportToFile(now + "_dfa");
                 }
             }
         });
