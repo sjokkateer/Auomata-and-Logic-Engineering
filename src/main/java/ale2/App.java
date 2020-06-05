@@ -141,13 +141,18 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (automaton != null) {
+                    // We always write either the original dfa or nfa to file.
                     NfaConverter nfaConverter = new NfaConverter(automaton.getStateDiagram());
                     String now = LocalDateTime.now().toString();
                     automaton.exportToFile( now + "_original");
 
-                    StateDiagram convertedStateDiagram = nfaConverter.convertToDfa();
-                    Automaton converted = Automaton.fromStateDiagram(convertedStateDiagram);
-                    converted.exportToFile(now + "_dfa");
+                    // Only if it is not already in dfa we convert it to dfa and write
+                    // the test vectors.
+                    if (!automaton.isDFA()) {
+                        StateDiagram convertedStateDiagram = nfaConverter.convertToDfa();
+                        Automaton converted = Automaton.fromStateDiagram(convertedStateDiagram);
+                        converted.exportToFile(now + "_dfa");
+                    }
                 }
             }
         });
