@@ -54,7 +54,7 @@ public class LanguageChecker {
 
     public boolean isFinite() {
         for (List<State> cycle: getCycles()) {
-            if (acceptingStateInCycle(cycle)) return false;
+            // if (acceptingStateInCycle(cycle)) return false;
             if (pathToAcceptingStateFromCycle(cycle)) return false;
         }
 
@@ -71,7 +71,8 @@ public class LanguageChecker {
         int last = cycle.size() - 1;
         State initialState = cycle.get(last);
 
-        resetVisited(cycle);
+        // resetVisited(cycle);
+        resetAllVisited();
 
         return hasPathToAcceptingState(initialState);
     }

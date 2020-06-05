@@ -82,4 +82,9 @@ public class State implements IDotFile {
     public int hashCode() {
         return getSymbol().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return getSymbol();
+    }
 }
