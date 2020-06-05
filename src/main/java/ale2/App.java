@@ -5,6 +5,7 @@ import ale2.classes.Automaton.AutomatonFileManager;
 import ale2.classes.Automaton.Diagram.NfaConverter;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
+import ale2.classes.Automaton.Exceptions.NotConvertibleEpsilonNfa;
 import ale2.classes.Automaton.Exceptions.RegularExpressionException;
 import ale2.classes.Automaton.LanguageChecker;
 import ale2.classes.Automaton.Regex.Parser;
@@ -49,6 +50,7 @@ public class App extends JFrame {
     private JLabel wordsLabel;
     private JLabel languageLabel;
     private JButton convertToDfaBtn;
+    private JLabel convertToDfaErrorLb;
     private JFileChooser fileChooser;
 
     private Automaton automaton;
@@ -142,7 +144,15 @@ public class App extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (automaton != null) {
                     // We always write either the original dfa or nfa to file.
-                    NfaConverter nfaConverter = new NfaConverter(automaton.getStateDiagram());
+                    NfaConverter nfaConverter = null;
+                    try {
+                        convertToDfaErrorLb.setText("");
+                        nfaConverter = new NfaConverter(automaton.getStateDiagram());
+                    } catch (NotConvertibleEpsilonNfa notConvertibleEpsilonNfa) {
+                        convertToDfaErrorLb.setText(notConvertibleEpsilonNfa.getMessage());
+
+                        notConvertibleEpsilonNfa.printStackTrace();
+                    }
                     String now = LocalDateTime.now().toString();
                     automaton.exportToFile( now + "_original");
 

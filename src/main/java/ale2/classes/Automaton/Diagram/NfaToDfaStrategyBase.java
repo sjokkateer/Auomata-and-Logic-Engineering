@@ -1,5 +1,7 @@
 package ale2.classes.Automaton.Diagram;
 
+import ale2.classes.Automaton.Exceptions.NotConvertibleEpsilonNfa;
+
 import java.util.*;
 
 abstract public class NfaToDfaStrategyBase {
@@ -13,14 +15,27 @@ abstract public class NfaToDfaStrategyBase {
         determineAlphabet();
     }
 
-    public static NfaToDfaStrategyBase determineStrategy(StateDiagram stateDiagram) {
-        for (Transition transition : stateDiagram.getAllTransitions()) {
-            if (transition.getLabel() == '_') {
-                return new NfaToDfaWithEpsilonConversionStrategy(stateDiagram);
-            }
+    public static NfaToDfaStrategyBase determineStrategy(StateDiagram stateDiagram) throws NotConvertibleEpsilonNfa {
+//        for (Transition transition : stateDiagram.getAllTransitions()) {
+//            if (transition.getLabel() == '_') {
+//                return new NfaToDfaWithEpsilonConversionStrategy(stateDiagram);
+//            }
+//        }
+        if (allTransitionsEpsilon(stateDiagram.getAllTransitions())) {
+            throw new NotConvertibleEpsilonNfa();
         }
 
-        return new NfaToDfaWithoutEpsilonConversionStrategy(stateDiagram);
+        return new NfaToDfaWithEpsilonConversionStrategy(stateDiagram);
+
+//        return new NfaToDfaWithoutEpsilonConversionStrategy(stateDiagram);
+    }
+
+    private static boolean allTransitionsEpsilon(List<Transition> allTransitions) {
+        for (Transition transition : allTransitions) {
+            if (transition.getLabel() != '_') return false;
+        }
+
+        return true;
     }
 
     protected abstract List<State> initializeQueue();

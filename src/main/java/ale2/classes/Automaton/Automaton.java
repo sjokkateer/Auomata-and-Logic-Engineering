@@ -209,7 +209,7 @@ public class Automaton implements IDotFile {
         result += initial.getSymbol() + ",";
 
         for (State state: stateDiagram.getStates()) {
-            if (!state.isInitial()) {
+            if (!state.equals(initial)) {
                 result += state.getSymbol() + ",";
             }
         }
