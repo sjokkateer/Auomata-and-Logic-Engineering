@@ -19,7 +19,7 @@ public class PushDownAutomata extends StateDiagram {
             source = getState(source, transition[PushDownTransition.SOURCE]);
             char letter = transition[PushDownTransition.LETTER].charAt(0); // We should always have one character strings x) or we have invalid values.
             char stackPop = transition[PushDownTransition.STACK_POP_CHARACTER].charAt(0);
-            char stackPush = transition[PushDownTransition.STACK_POP_CHARACTER].charAt(0);
+            char stackPush = transition[PushDownTransition.STACK_PUSH_CHARACTER].charAt(0);
             destination = getState(destination, transition[PushDownTransition.DESTINATION]);
 
             t = new PushDownTransition(source, letter, stackPop, stackPush,destination);

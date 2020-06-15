@@ -24,5 +24,32 @@ public class PushDownTransition extends Transition {
         return stackPush;
     }
 
-    // Probably override the getDotFileString method
+    @Override
+    public String getDotFileString() {
+        String result = super.getDotFileString();
+
+        if (getStackPop() != '_' || getStackPush() != '_') {
+            result = result.substring(0, result.length() - 3);
+
+            result += " [" + getStackPop() + "/" + getStackPush() + "]";
+            result += "\"]\n";
+        }
+
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        String result = getSource().getSymbol() + "," + getLabel() + " ";
+
+        if (getStackPop() == '_' && getStackPush() == '_') {
+            result += "     ";
+        } else {
+            result += "[" + getStackPop() + "," + getStackPush() + "]";
+        }
+
+        result += " --> " + getDestination().getSymbol();
+
+        return result;
+    }
 }
