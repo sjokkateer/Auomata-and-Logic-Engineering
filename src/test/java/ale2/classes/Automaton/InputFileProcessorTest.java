@@ -1,14 +1,19 @@
 package ale2.classes.Automaton;
 
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.*;
 
+@RunWith(JUnitParamsRunner.class)
 public class InputFileProcessorTest {
 
     @Test
@@ -67,77 +72,30 @@ public class InputFileProcessorTest {
         assertEquals("Since no words were read, the Array of words should be empty ", expectedNumberOfWords, inputFileProcessor.getWords().size());
     }
 
+    // Perhaps add similar check for the format of the transition elements.
+
     @Test(expected = FileProcessingException.class)
-    public void process_existingFileGivenWithInvalidFormatAlphabet_expectedFileProcessingExceptionThrown() throws FileProcessingException {
+    @Parameters(method = "getInvalidFormatFiles")
+    public void process_existingFileGivenWithInvalidFormatAlphabet_expectedFileProcessingExceptionThrown(String fileName) throws FileProcessingException {
         // Arrange
         InputFileProcessor inputFileProcessor = new InputFileProcessor();
 
-        String existingPathToFile = AutomatonFileManager.getResourceFolder() + "/invalid_format_alphabet.txt";
+        String existingPathToFile = AutomatonFileManager.getResourceFolder() + "/" + fileName;
         File existingFile = new File(existingPathToFile);
 
         // Act // Assert
         inputFileProcessor.process(existingFile);
     }
 
-    @Test(expected = FileProcessingException.class)
-    public void process_existingFileGivenWithInvalidFormatStates_expectedFileProcessingExceptionThrown() throws FileProcessingException {
-        // Arrange
-        InputFileProcessor inputFileProcessor = new InputFileProcessor();
-
-        String existingPathToFile = AutomatonFileManager.getResourceFolder() + "/invalid_format_states.txt";
-        File existingFile = new File(existingPathToFile);
-
-        // Act // Assert
-        inputFileProcessor.process(existingFile);
-    }
-
-    @Test(expected = FileProcessingException.class)
-    public void process_existingFileGivenWithInvalidFormatAcceptingStates_expectedFileProcessingExceptionThrown() throws FileProcessingException {
-        // Arrange
-        InputFileProcessor inputFileProcessor = new InputFileProcessor();
-
-        String existingPathToFile = AutomatonFileManager.getResourceFolder() + "/invalid_format_accepting_states.txt";
-        File existingFile = new File(existingPathToFile);
-
-        // Act // Assert
-        inputFileProcessor.process(existingFile);
-    }
-
-    @Test(expected = FileProcessingException.class)
-    public void process_existingFileGivenForTransitionsWithoutEndIndicator_expectedFileProcessingExceptionThrown() throws FileProcessingException {
-        // Arrange
-        InputFileProcessor inputFileProcessor = new InputFileProcessor();
-
-        String existingPathToFile = AutomatonFileManager.getResourceFolder() + "/invalid_format_transitions_end.txt";
-        File existingFile = new File(existingPathToFile);
-
-        // Act // Assert
-        inputFileProcessor.process(existingFile);
-    }
-
-    @Test(expected = FileProcessingException.class)
-    public void process_existingFileGivenForTransitionsInvalidTransitionLine_expectedFileProcessingExceptionThrown() throws FileProcessingException {
-        // Arrange
-        InputFileProcessor inputFileProcessor = new InputFileProcessor();
-
-        String existingPathToFile = AutomatonFileManager.getResourceFolder() + "/invalid_format_transitions_arrow.txt";
-        File existingFile = new File(existingPathToFile);
-
-        // Act // Assert
-        inputFileProcessor.process(existingFile);
-    }
-
-    // All of these could be refactored into a parameterized test where the filename is input.
-    @Test(expected = FileProcessingException.class)
-    public void process_existingFileGivenForInvalidWordsFormat_expectedFileProcessingExceptionThrown() throws FileProcessingException {
-        // Arrange
-        InputFileProcessor inputFileProcessor = new InputFileProcessor();
-
-        String existingPathToFile = AutomatonFileManager.getResourceFolder() + "/invalid_format_words.txt";
-        File existingFile = new File(existingPathToFile);
-
-        // Act // Assert
-        inputFileProcessor.process(existingFile);
+    private static final Object[] getInvalidFormatFiles() {
+        return $(
+                $( "/invalid_format_alphabet.txt"),
+                $( "/invalid_format_states.txt"),
+                $( "/invalid_format_accepting_states.txt"),
+                $( "/invalid_format_transitions_end.txt"),
+                $( "/invalid_format_transitions_arrow.txt"),
+                $( "/invalid_format_words.txt")
+        );
     }
 
     @Test
