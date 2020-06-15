@@ -1,5 +1,6 @@
 package ale2.classes.Automaton;
 
+import ale2.classes.Automaton.Diagram.PdaTransition;
 import ale2.classes.Automaton.Diagram.Transition;
 import ale2.classes.Automaton.Exceptions.*;
 
@@ -17,8 +18,11 @@ public class InputFileProcessor {
     private static final String TRANSITIONS = "transitions";
     private static final String END = "end.";
     private static final String WORDS = "words";
+    private static final String STACK = "stack";
 
     private Scanner scanner;
+
+    private boolean pda;
 
     private String alphabet;
     private List<String> states;
@@ -61,6 +65,8 @@ public class InputFileProcessor {
             processTransitions();
         } else if (lineToLower.contains(WORDS)) {
             processWords();
+        } else if (lineToLower.contains(STACK)) {
+            pda = true;
         }
     }
 
@@ -70,6 +76,8 @@ public class InputFileProcessor {
         acceptingStates = new ArrayList<>();
         transitions = new ArrayList<>();
         words = new ArrayList<>();
+
+        pda = false;
     }
 
     private void processAlphabet(String line) throws FileProcessingException {
@@ -102,9 +110,7 @@ public class InputFileProcessor {
     }
 
     private void processTransitions() throws FileProcessingException {
-        AddLine transitionMethod = (line) -> {
-            transitions.add(processTransitionLine(line));
-        };
+        AddLine transitionMethod = getStrategy();
 
         processSequenceOfLines(transitionMethod, "transitions");
     }
@@ -119,6 +125,53 @@ public class InputFileProcessor {
         }
 
         if (!line.toLowerCase().contains(END)) throw new NoEndFoundException("Could not find the end. indication after your sequence of " + topic);
+    }
+
+    private AddLine getStrategy() {
+        AddLine transitionMethod = (line) -> {
+            transitions.add(processTransitionLine(line));
+        };
+
+        if (isPda()) {
+            transitionMethod = (line) -> {
+                transitions.add(processTransitionLineForPda(line));
+            };
+        }
+
+        return transitionMethod;
+    }
+
+    private String[] processTransitionLineForPda(String pdaTransitionLine) throws FileProcessingException {
+        String[] pdaTransitionElements = new String[5];
+
+        // Should return two pieces.
+        String[] temporary = splitLine("-->", pdaTransitionLine, pdaTransitionLine);
+        pdaTransitionElements[PdaTransition.DESTINATION] = temporary[1].trim();
+
+        // Should be 2 or 3 pieces
+        temporary = splitLine(",", temporary[0], pdaTransitionLine);
+
+        pdaTransitionElements[PdaTransition.SOURCE] = temporary[0].trim();
+        pdaTransitionElements[PdaTransition.LETTER] = temporary[1].substring(0, 1);
+
+        // Test the length of temporary to figure out if we got stack elements or not.
+        if (temporary.length == 3) {
+            String stackPushChar = temporary[2];
+            stackPushChar = stackPushChar.substring(0, stackPushChar.length() - 2);
+            pdaTransitionElements[PdaTransition.STACK_PUSH_CHARACTER] = stackPushChar;
+
+            temporary = splitLine(" ", temporary[1], pdaTransitionLine);
+            pdaTransitionElements[PdaTransition.STACK_POP_CHARACTER] = temporary[1].substring(1);
+        } else {
+            pdaTransitionElements[PdaTransition.STACK_POP_CHARACTER] = "_";
+            pdaTransitionElements[PdaTransition.STACK_PUSH_CHARACTER] = "_";
+        }
+
+        return pdaTransitionElements;
+    }
+
+    private boolean isPda() {
+        return pda;
     }
 
     interface AddLine {
@@ -141,7 +194,7 @@ public class InputFileProcessor {
     private String[] splitLine(String splitPattern, String partToSplit, String transitionLine) throws FileProcessingException {
         String[] temporary = partToSplit.split(splitPattern);
 
-        if (temporary.length != 2) {
+        if (temporary.length < 2 || temporary.length > 3) {
             throw new InvalidLineFormatException("The given line is invalid: " + transitionLine);
         }
 

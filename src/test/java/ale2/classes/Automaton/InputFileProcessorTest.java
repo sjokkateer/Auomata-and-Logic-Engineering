@@ -4,6 +4,8 @@ import ale2.classes.Automaton.Exceptions.FileProcessingException;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -125,6 +127,7 @@ public class InputFileProcessorTest {
         inputFileProcessor.process(existingFile);
     }
 
+    // All of these could be refactored into a parameterized test where the filename is input.
     @Test(expected = FileProcessingException.class)
     public void process_existingFileGivenForInvalidWordsFormat_expectedFileProcessingExceptionThrown() throws FileProcessingException {
         // Arrange
@@ -135,5 +138,58 @@ public class InputFileProcessorTest {
 
         // Act // Assert
         inputFileProcessor.process(existingFile);
+    }
+
+    @Test
+    public void process_existingFileContainingPDAFormat_expectedAllFieldsProvidedWithDataAndTransitionsCorrectlyParsed() throws FileProcessingException {
+        // Arrange
+        InputFileProcessor inputFileProcessor = new InputFileProcessor();
+
+        String existingPathToFile = AutomatonFileManager.getResourceFolder() + "/example_pda.txt";
+        File existingFile = new File(existingPathToFile);
+
+        // Act
+        inputFileProcessor.process(existingFile);
+
+        // Assert
+        String expectedAlphabet = "abc";
+        assertEquals("Since those " + expectedAlphabet.length() + " characters are given", expectedAlphabet, inputFileProcessor.getAlphabet());
+
+        int expectedNumberOfStates = 3;
+        assertEquals("Since the file should contain " + expectedNumberOfStates + " states", expectedNumberOfStates, inputFileProcessor.getStates().size());
+
+        int expectedNumberOfAcceptingStates = 1;
+        assertEquals("Since the file should contain " + expectedNumberOfAcceptingStates + " accepting states", expectedNumberOfAcceptingStates, inputFileProcessor.getAcceptingStates().size());
+
+        int expectedNumberOfTransitions = 5;
+        assertEquals("Since the file should contain " + expectedNumberOfTransitions + " transitions", expectedNumberOfTransitions, inputFileProcessor.getTransitions().size());
+
+        List<String[]> actualPdaTransitions = inputFileProcessor.getTransitions();
+        List<String[]> pdaTransitions = getPdaTransitions();
+
+        // Assert all individual elements are in the right format
+        for (int i = 0; i < pdaTransitions.size(); i++) {
+            String[] pdaTransitionElements = pdaTransitions.get(i);
+            String[] actualPdaTransitionElement = actualPdaTransitions.get(i);
+
+            for (int j = 0; j < pdaTransitionElements.length; j++) {
+                assertEquals("Both should be equal as this is the format we expected", pdaTransitionElements[j], actualPdaTransitionElement[j]);
+            }
+        }
+
+        int expectedNumberOfWords = 8;
+        assertEquals("Since no words were read, the Array of words should be empty ", expectedNumberOfWords, inputFileProcessor.getWords().size());
+    }
+
+    private List<String[]> getPdaTransitions() {
+        List<String[]> pdaTransitions = new ArrayList<>();
+
+        pdaTransitions.add(new String[] { "S", "a", "_", "x", "S" });
+        pdaTransitions.add(new String[] { "S", "_", "_", "_", "B" });
+        pdaTransitions.add(new String[] { "B", "b", "_", "x", "B" });
+        pdaTransitions.add(new String[] { "B", "_", "_", "_", "C" });
+        pdaTransitions.add(new String[] { "C", "c", "x", "_", "C" });
+
+        return pdaTransitions;
     }
 }
