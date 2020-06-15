@@ -47,6 +47,7 @@ public class InputFileProcessor {
         }
     }
 
+    // Always default to the regular parsing of lines unless we find stack
     private void processLine(String line) throws FileProcessingException {
         String lineToLower = line.toLowerCase();
 
