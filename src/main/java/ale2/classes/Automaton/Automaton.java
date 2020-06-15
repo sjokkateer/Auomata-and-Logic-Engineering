@@ -1,5 +1,6 @@
 package ale2.classes.Automaton;
 
+import ale2.classes.Automaton.Diagram.PushDownAutomata;
 import ale2.classes.Automaton.Diagram.State;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Diagram.Transition;
@@ -47,10 +48,11 @@ public class Automaton implements IDotFile {
         inputFileProcessor.process(file);
 
         Set<Character> alphabet = createAlphabetSet(inputFileProcessor.getAlphabet());
-        StateDiagram stateDiagram = new StateDiagram(
+        StateDiagram stateDiagram = StateDiagram.create(
                 inputFileProcessor.getStates(),
                 inputFileProcessor.getAcceptingStates(),
-                inputFileProcessor.getTransitions()
+                inputFileProcessor.getTransitions(),
+                inputFileProcessor.isPda()
         );
         Set<Word> wordCollection = createWordCollection(inputFileProcessor.getWords());
 
@@ -139,6 +141,7 @@ public class Automaton implements IDotFile {
         return result;
     }
 
+    // Not a pretty method, since now this class gets more responsibilities.
     public void exportToFile(String fileName) {
         PrintWriter writer = null;
 

@@ -44,6 +44,18 @@ public class StateDiagram implements IDotFile {
         return thompsonConstructionStrategy.create();
     }
 
+    public static StateDiagram create(List<String> states, List<String> acceptingStates, List<String[]> transitions, boolean isPda) {
+        StateDiagram stateDiagram = null;
+
+        if (isPda) {
+            stateDiagram = new PushDownAutomata(states, acceptingStates, transitions);
+        } else {
+            stateDiagram = new StateDiagram(states, acceptingStates, transitions);
+        }
+
+        return stateDiagram;
+    }
+
     private void createStates(List<String> states) {
         State v;
 
@@ -61,17 +73,17 @@ public class StateDiagram implements IDotFile {
     private void addAcceptingStates(List<String> acceptingStates) {
         Set<State> copy = new HashSet<>(states);
         for (State state: copy) {
-            attemptToWrapWithAcceptingState(state, acceptingStates);
+            attemptToSetAsAcceptingState(state, acceptingStates);
         }
     }
 
-    private void attemptToWrapWithAcceptingState(State state, List<String> acceptingStates) {
+    private void attemptToSetAsAcceptingState(State state, List<String> acceptingStates) {
         if (acceptingStates.contains(state.getSymbol())) {
             state.setAccepting();
         }
     }
 
-    private void addTransitions(List<String[]> transitions) {
+    protected void addTransitions(List<String[]> transitions) {
         Transition t;
         State source = null;
         State destination = null;
@@ -102,7 +114,7 @@ public class StateDiagram implements IDotFile {
         transitionList.add(transition);
     }
 
-    private State getState(State state, String stateSymbol) {
+    protected State getState(State state, String stateSymbol) {
         if (state == null || !stateSymbol.equals(state.getSymbol())) {
             state = getState(stateSymbol);
         }
@@ -130,6 +142,7 @@ public class StateDiagram implements IDotFile {
     }
 
     @Override
+    // Probably want to override this
     public String getDotFileString() {
         String result = "\trankdir=LR;\n";
         result += "\t\"\" [shape=none]\n";

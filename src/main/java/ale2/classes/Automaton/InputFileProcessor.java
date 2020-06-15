@@ -1,6 +1,6 @@
 package ale2.classes.Automaton;
 
-import ale2.classes.Automaton.Diagram.PdaTransition;
+import ale2.classes.Automaton.Diagram.PushDownTransition;
 import ale2.classes.Automaton.Diagram.Transition;
 import ale2.classes.Automaton.Exceptions.*;
 
@@ -146,31 +146,31 @@ public class InputFileProcessor {
 
         // Should return two pieces.
         String[] temporary = splitLine("-->", pdaTransitionLine, pdaTransitionLine);
-        pdaTransitionElements[PdaTransition.DESTINATION] = temporary[1].trim();
+        pdaTransitionElements[PushDownTransition.DESTINATION] = temporary[1].trim();
 
         // Should be 2 or 3 pieces
         temporary = splitLine(",", temporary[0], pdaTransitionLine);
 
-        pdaTransitionElements[PdaTransition.SOURCE] = temporary[0].trim();
-        pdaTransitionElements[PdaTransition.LETTER] = temporary[1].substring(0, 1);
+        pdaTransitionElements[PushDownTransition.SOURCE] = temporary[0].trim();
+        pdaTransitionElements[PushDownTransition.LETTER] = temporary[1].substring(0, 1);
 
         // Test the length of temporary to figure out if we got stack elements or not.
         if (temporary.length == 3) {
             String stackPushChar = temporary[2];
             stackPushChar = stackPushChar.substring(0, stackPushChar.length() - 2);
-            pdaTransitionElements[PdaTransition.STACK_PUSH_CHARACTER] = stackPushChar;
+            pdaTransitionElements[PushDownTransition.STACK_PUSH_CHARACTER] = stackPushChar;
 
             temporary = splitLine(" ", temporary[1], pdaTransitionLine);
-            pdaTransitionElements[PdaTransition.STACK_POP_CHARACTER] = temporary[1].substring(1);
+            pdaTransitionElements[PushDownTransition.STACK_POP_CHARACTER] = temporary[1].substring(1);
         } else {
-            pdaTransitionElements[PdaTransition.STACK_POP_CHARACTER] = "_";
-            pdaTransitionElements[PdaTransition.STACK_PUSH_CHARACTER] = "_";
+            pdaTransitionElements[PushDownTransition.STACK_POP_CHARACTER] = "_";
+            pdaTransitionElements[PushDownTransition.STACK_PUSH_CHARACTER] = "_";
         }
 
         return pdaTransitionElements;
     }
 
-    private boolean isPda() {
+    public boolean isPda() {
         return pda;
     }
 
