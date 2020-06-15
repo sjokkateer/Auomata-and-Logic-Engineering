@@ -68,11 +68,30 @@ public class InputFileProcessorTest {
         int expectedNumberOfTransitions = 2;
         assertEquals("Since the file should contain " + expectedNumberOfTransitions + " transitions", expectedNumberOfTransitions, inputFileProcessor.getTransitions().size());
 
+        List<String[]> actualTransitions = inputFileProcessor.getTransitions();
+        List<String[]> transitions = getTransitions();
+
+        for (int i = 0; i < transitions.size(); i++) {
+            String[] transitionElements = transitions.get(i);
+            String[] actualTransitionElements = actualTransitions.get(i);
+
+            for (int j = 0; j < transitionElements.length; j++) {
+                assertEquals("Both should be equal as this is the format we expected", transitionElements[j], actualTransitionElements[j]);
+            }
+        }
+
         int expectedNumberOfWords = 9;
         assertEquals("Since no words were read, the Array of words should be empty ", expectedNumberOfWords, inputFileProcessor.getWords().size());
     }
 
-    // Perhaps add similar check for the format of the transition elements.
+    private List<String[]> getTransitions() {
+        List<String[]> transitions = new ArrayList<>();
+
+        transitions.add(new String[] { "q0", "a", "q0" });
+        transitions.add(new String[] { "q0", "b", "q0" });
+
+        return transitions;
+    }
 
     @Test(expected = FileProcessingException.class)
     @Parameters(method = "getInvalidFormatFiles")
