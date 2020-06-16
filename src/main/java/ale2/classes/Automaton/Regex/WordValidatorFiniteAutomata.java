@@ -7,68 +7,17 @@ import ale2.classes.Automaton.Diagram.Transition;
 import java.util.List;
 import java.util.Set;
 
-public class WordValidator {
-    private Set<Character> alphabet;
-    private StateDiagram stateDiagram;
+/**
+ * Class is responsible for validating words that belong to an FA.
+ */
+public class WordValidatorFiniteAutomata extends WordValidatorBase {
 
-    public WordValidator(Set<Character> alphabet, StateDiagram stateDiagram) {
-        this.alphabet = alphabet;
-        this.stateDiagram = stateDiagram;
+    public WordValidatorFiniteAutomata(Set<Character> alphabet, StateDiagram stateDiagram) {
+        super(alphabet, stateDiagram);
     }
 
-    public void check(Set<Word> wordCollection) {
-        for (Word word: wordCollection) {
-            validate(word);
-        }
-    }
-
-    /**
-     * The input word modified to indicate if
-     * it belongs to the language or not.
-     *
-     * @param word
-     * @return the input word
-     */
-    public void validate(Word word) {
-        State initialState = stateDiagram.getInitialState();
-
-        // We should exit this method (the word will remain false (not belonging to the language)
-        // in case there is no final/accepting state in the automata and or it contains letters not belonging
-        // to the alphabet.
-        if (areLettersInAlphabet(word) && stateDiagramHasAcceptingState()) {
-            belongsToLanguage(initialState, word.getWord(), word);
-        }
-    }
-
-    // Maybe we need to ask whether or not the empty character _ is represented by an empty string word or not.
-    private boolean areLettersInAlphabet(Word word) {
-        boolean result = true;
-        String wordContent = word.getWord();
-
-        for (int i = 0; i < wordContent.length(); i++) {
-            result = result && isLetterInAlphabet(wordContent.charAt(i));
-        }
-
-        return result;
-    }
-
-    private boolean isLetterInAlphabet(char letter) {
-        for (char alphabetCharacter: alphabet) {
-            if (letter == alphabetCharacter) return true;
-        }
-
-        return false;
-    }
-
-    private boolean stateDiagramHasAcceptingState() {
-        for (State state: stateDiagram.getStates()) {
-            if (state.isAccepting()) return true;
-        }
-
-        return false;
-    }
-
-    private void belongsToLanguage(State currentState, String currentWord, Word wordObject) {
+    @Override
+    protected void belongsToLanguage(State currentState, String currentWord, Word wordObject) {
         if (currentWord.length() <= 0) {
             if (currentState.isAccepting()) {
                 wordObject.setBelongsToLanguage(true);

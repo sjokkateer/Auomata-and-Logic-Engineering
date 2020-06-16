@@ -3,6 +3,9 @@ package ale2.classes.Automaton.Diagram;
 import java.util.List;
 
 public class PushDownAutomata extends StateDiagram {
+    // Needs a stack for keeping track of the characters.
+    // WordValidatorFiniteAutomata should also be able to operate on push down automatons
+
     public PushDownAutomata(List<String> states, List<String> acceptingStates, List<String[]> transitions) {
         super(states, acceptingStates, transitions);
     }

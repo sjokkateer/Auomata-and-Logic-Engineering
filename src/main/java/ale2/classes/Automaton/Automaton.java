@@ -1,12 +1,12 @@
 package ale2.classes.Automaton;
 
-import ale2.classes.Automaton.Diagram.PushDownAutomata;
 import ale2.classes.Automaton.Diagram.State;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Diagram.Transition;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
 import ale2.classes.Automaton.Regex.Word;
-import ale2.classes.Automaton.Regex.WordValidator;
+import ale2.classes.Automaton.Regex.WordValidatorBase;
+import ale2.classes.Automaton.Regex.WordValidatorFiniteAutomata;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,7 +24,7 @@ public class Automaton implements IDotFile {
     private StateDiagram stateDiagram;
     private Set<Word> wordCollection;
 
-    private WordValidator wordValidator;
+    private WordValidatorBase wordValidator;
 
     // Maybe alphabet should be removed from the automaton and be part of the wordValidator (which more or less manages all word/letter
     // related stuff. The automaton could then still call as client to obtain the alphabet from the wordvalidator obj.
@@ -36,7 +36,9 @@ public class Automaton implements IDotFile {
         this.stateDiagram = stateDiagram;
         this.wordCollection = wordCollection;
 
-        wordValidator = new WordValidator(this.alphabet, stateDiagram);
+        // Maybe the type of word validator should be determined or maybe some sort of adapter pattern or strategy
+        // should be applied based on whether or not we deal with a PDA.
+        wordValidator = WordValidatorBase.create(alphabet, stateDiagram);
         wordValidator.check(wordCollection);
     }
 
@@ -128,7 +130,7 @@ public class Automaton implements IDotFile {
         return wordCollection;
     }
 
-    public WordValidator getWordValidator() {
+    public WordValidatorBase getWordValidator() {
         return wordValidator;
     }
 
