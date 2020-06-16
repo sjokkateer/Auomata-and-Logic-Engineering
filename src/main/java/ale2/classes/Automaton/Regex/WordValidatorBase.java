@@ -10,7 +10,7 @@ abstract public class WordValidatorBase {
     private Set<Character> alphabet;
     protected StateDiagram stateDiagram;
 
-    public WordValidatorBase(Set<Character> alphabet, StateDiagram stateDiagram) {
+    protected WordValidatorBase(Set<Character> alphabet, StateDiagram stateDiagram) {
         this.alphabet = alphabet;
         this.stateDiagram = stateDiagram;
     }
@@ -63,9 +63,17 @@ abstract public class WordValidatorBase {
     }
 
     public static WordValidatorBase create(Set<Character> alphabet, StateDiagram stateDiagram) {
+        if (alphabet == null) {
+            throw new IllegalArgumentException("Alphabet is required for this class to work");
+        }
+
+        if (stateDiagram == null) {
+            throw new IllegalArgumentException("State diagram is required for this class to work");
+        }
+
         WordValidatorBase wordValidator = null;
 
-        if (stateDiagram.getClass() == PushDownAutomata.class) {
+        if (stateDiagram instanceof PushDownAutomata) {
             wordValidator = new WordValidatorPushDownAutomata(alphabet, stateDiagram);
         } else {
             wordValidator = new WordValidatorFiniteAutomata(alphabet, stateDiagram);
