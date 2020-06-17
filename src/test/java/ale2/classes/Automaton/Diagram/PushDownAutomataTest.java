@@ -63,6 +63,9 @@ public class PushDownAutomataTest {
         assertTrue("Since the first and only returned transition should be the one matching the epsilon character", possibleTransitions.get(0).getLabel() == '_');
     }
 
+    // Perhaps a test for all four prio transitions
+    // And for none, only different transitions
+
     @Test
     public void takeTransition_nonExistingTransition_shouldReturnFalse() {
         // Arrange

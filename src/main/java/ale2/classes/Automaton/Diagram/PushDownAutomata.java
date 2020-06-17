@@ -129,4 +129,8 @@ public class PushDownAutomata extends StateDiagram {
             addTransitionToCollection(t);
         }
     }
+
+    public void resetStack() {
+        stack = new Stack<>();
+    }
 }
