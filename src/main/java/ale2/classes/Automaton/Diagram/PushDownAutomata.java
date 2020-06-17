@@ -24,8 +24,6 @@ public class PushDownAutomata extends StateDiagram {
     }
 
     private void processStackCharacters(PushDownTransition transition) {
-        // To avoid using the same stack reference, perhaps create a new
-        // copy of the stack beforehand.
         if (transition.getStackPop() != '_') {
             stack.pop();
         }
@@ -66,7 +64,7 @@ public class PushDownAutomata extends StateDiagram {
         for (Transition transition : getTransitions(state)) {
             PushDownTransition pushDownTransition = (PushDownTransition) transition;
 
-            if (pushDownTransition.getLabel() == letter) {
+            if (pushDownTransition.getLabel() != '_' && pushDownTransition.getLabel() == letter) {
                 // Priority one
                 if (
                     !isStackEmpty()

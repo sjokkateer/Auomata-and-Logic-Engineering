@@ -150,4 +150,32 @@ public class WordValidatorPushDownAutomataTest {
             $("ch")
         );
     }
+
+    @Test
+    public void validate_wordIsPartOfTheLanguageWithPdaEmptyStackSymbolsCycle_expectedWordToBePartOfLanguage() throws FileProcessingException {
+        // Arrange
+        wordValidator = createWordValidatorFromFAFile("example_pda_5.txt");
+        Word word = new Word("a");
+
+        // Act
+        wordValidator.validate(word);
+        boolean isAccepted = word.doesBelongToLanguage();
+
+        // Assert
+        assertTrue("Since this is a valid word, accepted by the pda's language", isAccepted);
+    }
+
+    @Test
+    public void validate_wordIsPartOfTheLanguageSeveralEmptyTransitionsBackTrackingShouldEnsureStackIsProperlyAdministered_expectedWordToBePartOfLanguage() throws FileProcessingException {
+        // Arrange
+        wordValidator = createWordValidatorFromFAFile("example_pda_6.txt");
+        Word word = new Word("1");
+
+        // Act
+        wordValidator.validate(word);
+        boolean isAccepted = word.doesBelongToLanguage();
+
+        // Assert
+        assertTrue("Since this is a valid word, accepted by the pda's language", isAccepted);
+    }
 }

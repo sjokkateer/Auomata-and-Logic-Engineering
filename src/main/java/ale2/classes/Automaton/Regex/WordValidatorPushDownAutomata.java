@@ -25,6 +25,17 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
     protected void belongsToLanguage(State currentState, String currentWord, Word wordObject) {
         PushDownAutomata pushDownAutomata = (PushDownAutomata)stateDiagram;
 
+        // Add another case to break out of the method in case we are trapped in a never ending cycle
+        // Should most likely also be added to the original but we will expand the tests later on to verify this hypothesis
+
+        // Thus we probably need to add a list and create a copy every time we pass it down such that they are not
+        // the same reference.
+        // Then in the list we check if we reach a cycle the first time.
+        // If this is the case we store the word at that point in time.
+        // Then the second time we reach
+
+        // This would mean that when we backtrack we have the accurate path and do not get strange behavior in that sense.
+
         // Base case / termination condition
         if (currentWord.length() <= 0) {
             // Has to satisfy the following otherwise we nothing has to change, the word will still be
