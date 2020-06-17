@@ -35,7 +35,7 @@ abstract public class WordValidatorBase {
     abstract protected void belongsToLanguage(State initialState, String currentWord, Word wordObject);
 
     // Maybe we need to ask whether or not the empty character _ is represented by an empty string word or not.
-    private boolean areLettersInAlphabet(Word word) {
+    protected boolean areLettersInAlphabet(Word word) {
         boolean result = true;
         String wordContent = word.getWord();
 
@@ -54,7 +54,7 @@ abstract public class WordValidatorBase {
         return false;
     }
 
-    private boolean stateDiagramHasAcceptingState() {
+    protected boolean stateDiagramHasAcceptingState() {
         for (State state: stateDiagram.getStates()) {
             if (state.isAccepting()) return true;
         }

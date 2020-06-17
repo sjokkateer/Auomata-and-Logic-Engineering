@@ -1,12 +1,12 @@
 package ale2.classes.Automaton.Regex;
 
-import ale2.classes.Automaton.Diagram.PushDownAutomata;
-import ale2.classes.Automaton.Diagram.PushDownTransition;
-import ale2.classes.Automaton.Diagram.State;
-import ale2.classes.Automaton.Diagram.StateDiagram;
+import ale2.classes.Automaton.Diagram.*;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 public class WordValidatorPushDownAutomata extends WordValidatorBase {
     public WordValidatorPushDownAutomata(Set<Character> alphabet, StateDiagram stateDiagram) {
@@ -15,16 +15,23 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
 
     @Override
     public void validate(Word word) {
-        ((PushDownAutomata)stateDiagram).resetStack();
+        State initialState = stateDiagram.getInitialState();
 
-        super.validate(word);
+        // We should exit this method (the word will remain false (not belonging to the language)
+        // in case there is no final/accepting state in the automata and or it contains letters not belonging
+        // to the alphabet.
+        if (areLettersInAlphabet(word) && stateDiagramHasAcceptingState()) {
+            belongsToLanguage(initialState, word.getWord(), word, new Stack<>());
+        }
     }
 
     @Override
-    // Always starts with the initial state given, the entire word content, and the word object belonging to the current word.
-    protected void belongsToLanguage(State currentState, String currentWord, Word wordObject) {
-        PushDownAutomata pushDownAutomata = (PushDownAutomata)stateDiagram;
+    protected void belongsToLanguage(State initialState, String currentWord, Word wordObject) {
+        throw new NotImplementedException();
+    }
 
+    // Always starts with the initial state given, the entire word content, and the word object belonging to the current word.
+    private void belongsToLanguage(State currentState, String currentWord, Word wordObject, Stack<Character> currentStack) {
         // Add another case to break out of the method in case we are trapped in a never ending cycle
         // Should most likely also be added to the original but we will expand the tests later on to verify this hypothesis
 
@@ -40,10 +47,10 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
         if (currentWord.length() <= 0) {
             // Has to satisfy the following otherwise we nothing has to change, the word will still be
             // considered not part of the language.
-            if (currentState.isAccepting() && ((PushDownAutomata)stateDiagram).isStackEmpty()) {
+            if (currentState.isAccepting() && currentStack.empty()) {
                 wordObject.setBelongsToLanguage(true);
             } else {
-                belongsToLanguage(currentState, currentWord + "_", wordObject);
+                belongsToLanguage(currentState, currentWord + "_", wordObject, currentStack);
             }
         } else {
             // We gotta continue our search.
@@ -52,7 +59,7 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
             char currentCharacter = currentWord.charAt(0);
 
             // The method to get the transitions is different.
-            List<PushDownTransition> possibleTransitions = pushDownAutomata.getPossibleTransitions(currentState, currentCharacter);
+            List<PushDownTransition> possibleTransitions = getPossibleTransitions(currentState, currentCharacter, currentStack);
 
             for (PushDownTransition transition: possibleTransitions) {
                 // If label of transition is equivalent to currentchar we pass the resulting string
@@ -62,19 +69,111 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
 
                 // And this method call is different, since we gotta update the stack first.
                 // Required to update the stack
-                pushDownAutomata.takeTransition(transition);
+                Stack<Character> copyOfStack = (Stack<Character>)currentStack.clone();
+                takeTransition(transition, copyOfStack);
 
                 if (transition.getLabel() == currentCharacter) {
                     String remainder = currentWord.substring(1);
-                    belongsToLanguage(destination, remainder, wordObject);
+                    belongsToLanguage(destination, remainder, wordObject, copyOfStack);
                 } else {
-                    belongsToLanguage(destination, currentWord, wordObject);
+                    belongsToLanguage(destination, currentWord, wordObject, copyOfStack);
                 }
 
                 if (wordObject.doesBelongToLanguage()) {
                     break;
                 }
             }
+        }
+    }
+
+    /**
+     * Get all possible transitions for the given state over provided letter.
+     *
+     * This will thus include all epsilon transitions as well.
+     *
+     * The list is returned with the following priority:
+     * - Transitions matching the given letter and the current stack pop symbol
+     * - Transitions matching the given letter but with epsilon stack pop symbol
+     * - Transitions matching the epsilon letter and the current stack pop symbol
+     * - Transitions matching the epsilon letter with epsilon stack pop symbol
+     *
+     * @param state
+     * @param letter
+     * @return
+     */
+    public List<PushDownTransition> getPossibleTransitions(State state, char letter, Stack<Character> stack) {
+
+        List<PushDownTransition> result = new ArrayList<>();
+
+        List<PushDownTransition> prioOne = new ArrayList<>();
+        List<PushDownTransition> prioTwo = new ArrayList<>();
+        List<PushDownTransition> prioThree = new ArrayList<>();
+        List<PushDownTransition> prioFour = new ArrayList<>();
+
+        for (Transition transition : stateDiagram.getTransitions(state)) {
+            PushDownTransition pushDownTransition = (PushDownTransition) transition;
+
+            if (pushDownTransition.getLabel() != '_' && pushDownTransition.getLabel() == letter) {
+                // Priority one
+                if (
+                    !stack.empty()
+                    && pushDownTransition.getStackPop() == stack.peek()
+                ) {
+                    prioOne.add(pushDownTransition);
+                }
+
+                // Priority two
+                if (pushDownTransition.getStackPop() == '_') {
+                    prioTwo.add(pushDownTransition);
+                }
+            }
+
+            if (pushDownTransition.getLabel() == '_') {
+                // Priority three
+                if (
+                    !stack.empty()
+                    && pushDownTransition.getStackPop() == stack.peek()
+                ) {
+                    prioThree.add(pushDownTransition);
+                }
+
+                // Priority four
+                if (pushDownTransition.getStackPop() == '_') {
+                    prioFour.add(pushDownTransition);
+                }
+            }
+        }
+
+        // To ensure the priority order.
+        // Even though according to description only one transition per prio rule
+        // can occur for a given state. Thus at most we get 4 transitions back
+        // Since this method more or less filters our valid possibilities.
+        result.addAll(prioOne);
+        result.addAll(prioTwo);
+        result.addAll(prioThree);
+        result.addAll(prioFour);
+
+        return result;
+    }
+
+    public boolean takeTransition(PushDownTransition transition, Stack<Character> stack) {
+        if (transition.getStackPop() == '_' || (!stack.empty() && transition.getStackPop() == stack.peek())) {
+            processStackCharacters(transition, stack);
+
+            return true;
+        }
+
+        // Push the stack push char onto the stack
+        return false;
+    }
+
+    private void processStackCharacters(PushDownTransition transition, Stack<Character> stack) {
+        if (transition.getStackPop() != '_') {
+            stack.pop();
+        }
+
+        if (transition.getStackPush() != '_') {
+            stack.push(transition.getStackPush());
         }
     }
 }

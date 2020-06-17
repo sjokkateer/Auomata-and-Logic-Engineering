@@ -32,36 +32,36 @@ public class PushDownAutomataTest {
         return pda;
     }
 
-    @Test
-    public void getPossibleTransitions_initialStateGivenOfExamplePdaWithLetterA_shouldReturnCollectionOfTwoPrioritizedAccordingly() {
-        // Arrange
-        State initialState = pda.getInitialState();
-        List<PushDownTransition> possibleTransitions = pda.getPossibleTransitions(initialState, 'a');
+//    @Test
+//    public void getPossibleTransitions_initialStateGivenOfExamplePdaWithLetterA_shouldReturnCollectionOfTwoPrioritizedAccordingly() {
+//        // Arrange
+//        State initialState = pda.getInitialState();
+//        List<PushDownTransition> possibleTransitions = pda.getPossibleTransitions(initialState, 'a');
+//
+//        // Act
+//        int actualNumberOfTransitions = possibleTransitions.size();
+//        int expectedNumberOfTransitions = 2;
+//
+//        // Assert
+//        assertEquals("Since this state has two possible transitions given the letter a", expectedNumberOfTransitions, actualNumberOfTransitions);
+//        assertTrue("Since the first of two returned transitions should be the one matching our letter of choice", possibleTransitions.get(0).getLabel() == 'a');
+//        assertTrue("Since the second of two returned transitions should be the one matching the epsilon character", possibleTransitions.get(1).getLabel() == '_');
+//    }
 
-        // Act
-        int actualNumberOfTransitions = possibleTransitions.size();
-        int expectedNumberOfTransitions = 2;
-
-        // Assert
-        assertEquals("Since this state has two possible transitions given the letter a", expectedNumberOfTransitions, actualNumberOfTransitions);
-        assertTrue("Since the first of two returned transitions should be the one matching our letter of choice", possibleTransitions.get(0).getLabel() == 'a');
-        assertTrue("Since the second of two returned transitions should be the one matching the epsilon character", possibleTransitions.get(1).getLabel() == '_');
-    }
-
-    @Test
-    public void getPossibleTransitions_initialStateGivenOfExamplePdaWithLetterB_shouldReturnCollectionOfOneOverEmptyTransition() {
-        // Arrange
-        State initialState = pda.getInitialState();
-        List<PushDownTransition> possibleTransitions = pda.getPossibleTransitions(initialState, 'b');
-
-        // Act
-        int actualNumberOfTransitions = possibleTransitions.size();
-        int expectedNumberOfTransitions = 1;
-
-        // Assert
-        assertEquals("Since this state has two possible transitions given the letter a", expectedNumberOfTransitions, actualNumberOfTransitions);
-        assertTrue("Since the first and only returned transition should be the one matching the epsilon character", possibleTransitions.get(0).getLabel() == '_');
-    }
+//    @Test
+//    public void getPossibleTransitions_initialStateGivenOfExamplePdaWithLetterB_shouldReturnCollectionOfOneOverEmptyTransition() {
+//        // Arrange
+//        State initialState = pda.getInitialState();
+//        List<PushDownTransition> possibleTransitions = pda.getPossibleTransitions(initialState, 'b');
+//
+//        // Act
+//        int actualNumberOfTransitions = possibleTransitions.size();
+//        int expectedNumberOfTransitions = 1;
+//
+//        // Assert
+//        assertEquals("Since this state has two possible transitions given the letter a", expectedNumberOfTransitions, actualNumberOfTransitions);
+//        assertTrue("Since the first and only returned transition should be the one matching the epsilon character", possibleTransitions.get(0).getLabel() == '_');
+//    }
 
     // Ensure that when using epsilon letter we do not get duplicate results back.
     @Test
@@ -69,47 +69,47 @@ public class PushDownAutomataTest {
         //
     }
 
-    @Test
-    public void takeTransition_nonExistingTransition_shouldReturnFalse() {
-        // Arrange
-        PushDownTransition nonExistingTransition = new PushDownTransition(new State("S"), 'a', 'x','y', new State("C"));
+//    @Test
+//    public void takeTransition_nonExistingTransition_shouldReturnFalse() {
+//        // Arrange
+//        PushDownTransition nonExistingTransition = new PushDownTransition(new State("S"), 'a', 'x','y', new State("C"));
+//
+//        // Act
+//        boolean transitionTaken = pda.takeTransition(nonExistingTransition);
+//
+//        // Assert
+//        assertFalse("Because the transition is not possible", transitionTaken);
+//    }
 
-        // Act
-        boolean transitionTaken = pda.takeTransition(nonExistingTransition);
+//    @Test
+//    public void takeTransition_epsilonStackPopCharacter_shouldReturnTrue() {
+//        // Arrange
+//        // get initial state, get the transition over _ with pushing x onto the stack letter a.
+//        State initial = pda.getInitialState();
+//        List<PushDownTransition> transitions = pda.getPossibleTransitions(initial, 'a');
+//
+//        PushDownTransition existingTransition = transitions.get(0);
+//
+//        // Act
+//        boolean transitionTaken = pda.takeTransition(existingTransition);
+//
+//        // Assert
+//        assertTrue("Because the transition should be possible as it has epsilon pop character", transitionTaken);
+//    }
 
-        // Assert
-        assertFalse("Because the transition is not possible", transitionTaken);
-    }
-
-    @Test
-    public void takeTransition_epsilonStackPopCharacter_shouldReturnTrue() {
-        // Arrange
-        // get initial state, get the transition over _ with pushing x onto the stack letter a.
-        State initial = pda.getInitialState();
-        List<PushDownTransition> transitions = pda.getPossibleTransitions(initial, 'a');
-
-        PushDownTransition existingTransition = transitions.get(0);
-
-        // Act
-        boolean transitionTaken = pda.takeTransition(existingTransition);
-
-        // Assert
-        assertTrue("Because the transition should be possible as it has epsilon pop character", transitionTaken);
-    }
-
-    @Test
-    public void takeTransition__shouldReturnTrue() {
-        // Arrange
-        // get initial state, get the transition over _ with pushing x onto the stack letter a.
-        State initial = pda.getInitialState();
-        List<PushDownTransition> transitions = pda.getPossibleTransitions(initial, 'a');
-
-        PushDownTransition existingTransition = transitions.get(0);
-
-        // Act
-        boolean transitionTaken = pda.takeTransition(existingTransition);
-
-        // Assert
-        assertTrue("Because the transition should be possible as it has epsilon pop character", transitionTaken);
-    }
+//    @Test
+//    public void takeTransition__shouldReturnTrue() {
+//        // Arrange
+//        // get initial state, get the transition over _ with pushing x onto the stack letter a.
+//        State initial = pda.getInitialState();
+//        List<PushDownTransition> transitions = pda.getPossibleTransitions(initial, 'a');
+//
+//        PushDownTransition existingTransition = transitions.get(0);
+//
+//        // Act
+//        boolean transitionTaken = pda.takeTransition(existingTransition);
+//
+//        // Assert
+//        assertTrue("Because the transition should be possible as it has epsilon pop character", transitionTaken);
+//    }
 }
