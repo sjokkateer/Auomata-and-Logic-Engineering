@@ -13,6 +13,15 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
 
     @Override
     protected void belongsToLanguage(State initialState, String currentWord, Word wordObject) {
+        //
+        // When true take the destination of the transition and get the next set of transitions.
+        //
 
     }
+
+    // Or maybe just take transition into returning boolean, if not possible the word validator
+    // will take the next transition to see if that is possible.
+
+    // if all possible ones run out the word could not be validated.
+
 }
