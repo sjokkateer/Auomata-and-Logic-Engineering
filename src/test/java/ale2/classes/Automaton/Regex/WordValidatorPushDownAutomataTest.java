@@ -112,7 +112,7 @@ public class WordValidatorPushDownAutomataTest {
     }
 
     @Test
-    public void validate_wordIsPartOfTheLanguageWithPdaEmptyingStackBasedOnEpsilonTransitions_expectedWordToBePartOfLanguage() throws FileProcessingException {
+    public void validate_wordIsPartOfTheLanguageWithPdaEmptyingStackBasedOnEpsilonTransitionsOnAcceptingState_expectedWordToBePartOfLanguage() throws FileProcessingException {
         // Arrange
         wordValidator = createWordValidatorFromFAFile("example_pda_3.txt");
         Word word = new Word("000");
@@ -123,5 +123,31 @@ public class WordValidatorPushDownAutomataTest {
 
         // Assert
         assertTrue("Since this is a valid word, accepted by the pda's language", isAccepted);
+    }
+
+    @Test
+    @Parameters(method = "getExamplesFromReader")
+    public void validate_wordIsPartOfTheLanguagePriorityRulesApplied_expectedWordsToBePartOfTheLanguage(String wordContent) throws FileProcessingException {
+        // Arrange
+        wordValidator = createWordValidatorFromFAFile("example_pda_4.txt");
+        Word word = new Word(wordContent);
+
+        // Act
+        wordValidator.validate(word);
+        boolean isAccepted = word.doesBelongToLanguage();
+
+        // Assert
+        assertTrue("Since this is a valid word, accepted by the pda's language", isAccepted);
+    }
+
+    public Object[] getExamplesFromReader() {
+        return $(
+            $("ad"),
+            $("be"),
+            $("cef"),
+            $("ag"),
+            $("b"),
+            $("ch")
+        );
     }
 }
