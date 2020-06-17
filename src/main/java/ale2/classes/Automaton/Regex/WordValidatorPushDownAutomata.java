@@ -9,19 +9,25 @@ import java.util.Set;
 import java.util.Stack;
 
 public class WordValidatorPushDownAutomata extends WordValidatorBase {
+    private String currentWord;
+    private int stackSize;
+
     public WordValidatorPushDownAutomata(Set<Character> alphabet, StateDiagram stateDiagram) {
         super(alphabet, stateDiagram);
     }
 
     @Override
     public void validate(Word word) {
+        currentWord = null;
+        stackSize = -1;
+
         State initialState = stateDiagram.getInitialState();
 
         // We should exit this method (the word will remain false (not belonging to the language)
         // in case there is no final/accepting state in the automata and or it contains letters not belonging
         // to the alphabet.
         if (areLettersInAlphabet(word) && stateDiagramHasAcceptingState()) {
-            belongsToLanguage(initialState, word.getWord(), word, new Stack<>());
+            belongsToLanguage(initialState, word.getWord(), word, new Stack<>(), new ArrayList<>());
         }
     }
 
@@ -31,7 +37,7 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
     }
 
     // Always starts with the initial state given, the entire word content, and the word object belonging to the current word.
-    private void belongsToLanguage(State currentState, String currentWord, Word wordObject, Stack<Character> currentStack) {
+    private void belongsToLanguage(State currentState, String currentWord, Word wordObject, Stack<Character> currentStack, List<State> currentPath) {
         // Add another case to break out of the method in case we are trapped in a never ending cycle
         // Should most likely also be added to the original but we will expand the tests later on to verify this hypothesis
 
@@ -40,6 +46,29 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
         // Then in the list we check if we reach a cycle the first time.
         // If this is the case we store the word at that point in time.
         // Then the second time we reach
+        if (!currentWord.equals("_") && currentPath.contains(currentState)) {
+            // Indicates our first cycle occurred.
+            if (this.currentWord == null && this.stackSize == -1) {
+                this.currentWord = currentWord;
+                this.stackSize = currentStack.size();
+            } else {
+                // This could be our nth cycle, check if the word and size changed else return.
+                if (!this.currentWord.equals(currentWord) || this.stackSize != currentStack.size()) {
+                    this.currentWord = currentWord;
+                    this.stackSize = currentStack.size();
+                } else {
+                    return;
+                }
+            }
+        }
+
+        currentPath.add(currentState);
+
+        // Can I just return since I consider this a dead end, and we get back at the point where we can continue our
+        // transitions?
+
+        // If backedge, assign the currentWord content and stack size to this object.
+        // If we reach the next back edge we check to see if something changed.
 
         // This would mean that when we backtrack we have the accurate path and do not get strange behavior in that sense.
 
@@ -50,7 +79,7 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
             if (currentState.isAccepting() && currentStack.empty()) {
                 wordObject.setBelongsToLanguage(true);
             } else {
-                belongsToLanguage(currentState, currentWord + "_", wordObject, currentStack);
+                belongsToLanguage(currentState, currentWord + "_", wordObject, currentStack, currentPath);
             }
         } else {
             // We gotta continue our search.
@@ -74,9 +103,9 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
 
                 if (transition.getLabel() == currentCharacter) {
                     String remainder = currentWord.substring(1);
-                    belongsToLanguage(destination, remainder, wordObject, copyOfStack);
+                    belongsToLanguage(destination, remainder, wordObject, copyOfStack, currentPath);
                 } else {
-                    belongsToLanguage(destination, currentWord, wordObject, copyOfStack);
+                    belongsToLanguage(destination, currentWord, wordObject, copyOfStack, currentPath);
                 }
 
                 if (wordObject.doesBelongToLanguage()) {
