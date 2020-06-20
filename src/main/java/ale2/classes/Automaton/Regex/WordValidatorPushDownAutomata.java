@@ -1,7 +1,6 @@
 package ale2.classes.Automaton.Regex;
 
 import ale2.classes.Automaton.Diagram.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +31,8 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
     }
 
     @Override
-    protected void belongsToLanguage(State initialState, String currentWord, Word wordObject) {
-        throw new NotImplementedException();
+    protected void belongsToLanguage(State initialState, String currentWord, Word wordObject, List<State> currentPath) {
+
     }
 
     // Always starts with the initial state given, the entire word content, and the word object belonging to the current word.

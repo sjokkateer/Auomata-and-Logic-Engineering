@@ -4,8 +4,10 @@ import ale2.classes.Automaton.Diagram.State;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Diagram.Transition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Class is responsible for validating words that belong to an FA.
@@ -17,7 +19,24 @@ public class WordValidatorFiniteAutomata extends WordValidatorBase {
     }
 
     @Override
-    protected void belongsToLanguage(State currentState, String currentWord, Word wordObject) {
+    protected void belongsToLanguage(State currentState, String currentWord, Word wordObject, List<State> currentPath) {
+
+        if (!currentWord.equals("_") && currentPath.contains(currentState)) {
+            // Indicates our first cycle occurred.
+            if (this.currentWord == null) {
+                this.currentWord = currentWord;
+            } else {
+                // This could be our nth cycle, check if the word and size changed else return.
+                if (!this.currentWord.equals(currentWord)) {
+                    this.currentWord = currentWord;
+                } else {
+                    return;
+                }
+            }
+        }
+
+        currentPath.add(currentState);
+
         if (currentWord.length() <= 0) {
             if (currentState.isAccepting()) {
                 wordObject.setBelongsToLanguage(true);
@@ -29,7 +48,7 @@ public class WordValidatorFiniteAutomata extends WordValidatorBase {
                 // since if the next has no possibility of using an empty string transition it will result in false which should be the case.
 
                 // We only get here if we have an empty string
-                belongsToLanguage(currentState, currentWord + "_", wordObject);
+                belongsToLanguage(currentState, currentWord + "_", wordObject, currentPath);
             }
         } else {
             char currentCharacter = currentWord.charAt(0);
@@ -40,9 +59,9 @@ public class WordValidatorFiniteAutomata extends WordValidatorBase {
 
                 if (possibleTransition.getLabel().equals(currentCharacter)) {
                     String remainder = currentWord.substring(1);
-                    belongsToLanguage(destination, remainder, wordObject);
+                    belongsToLanguage(destination, remainder, wordObject, currentPath);
                 } else if (isEmptyStringTransitionWithDifferentDestination(possibleTransition)) {
-                    belongsToLanguage(destination, currentWord, wordObject);
+                    belongsToLanguage(destination, currentWord, wordObject, currentPath);
                 }
 
                 if (wordObject.doesBelongToLanguage()) {

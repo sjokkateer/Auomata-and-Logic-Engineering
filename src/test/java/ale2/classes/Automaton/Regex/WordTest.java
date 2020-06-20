@@ -20,7 +20,7 @@ public class WordTest {
 
     @Test
     @Parameters(method = "getEmptyWords")
-    public void constructor_emptyWordGivenWithDifferentEpsilonCharacters_expectedEmptyWordLengthOneReturned(String emptyWord) {
+    public void constructor_emptyWordGivenWithDifferentNumberOfEpsilonCharacters_expectedEmptyWordOfLengthOneReturned(String emptyWord) {
         // Arrange
         Word word = new Word(emptyWord);
 

@@ -4,15 +4,19 @@ import ale2.classes.Automaton.Diagram.PushDownAutomata;
 import ale2.classes.Automaton.Diagram.State;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 abstract public class WordValidatorBase {
+    protected String currentWord;
     private Set<Character> alphabet;
     protected StateDiagram stateDiagram;
 
     protected WordValidatorBase(Set<Character> alphabet, StateDiagram stateDiagram) {
         this.alphabet = alphabet;
         this.stateDiagram = stateDiagram;
+        this.currentWord = null;
     }
 
     public void check(Set<Word> wordCollection) {
@@ -22,17 +26,18 @@ abstract public class WordValidatorBase {
     }
 
     public void validate(Word word) {
+        currentWord = null;
         State initialState = stateDiagram.getInitialState();
 
         // We should exit this method (the word will remain false (not belonging to the language)
         // in case there is no final/accepting state in the automata and or it contains letters not belonging
         // to the alphabet.
         if (areLettersInAlphabet(word) && stateDiagramHasAcceptingState()) {
-            belongsToLanguage(initialState, word.getWord(), word);
+            belongsToLanguage(initialState, word.getWord(), word, new ArrayList<>());
         }
     }
 
-    abstract protected void belongsToLanguage(State initialState, String currentWord, Word wordObject);
+    abstract protected void belongsToLanguage(State initialState, String currentWord, Word wordObject, List<State> currentPath);
 
     // Maybe we need to ask whether or not the empty character _ is represented by an empty string word or not.
     protected boolean areLettersInAlphabet(Word word) {
