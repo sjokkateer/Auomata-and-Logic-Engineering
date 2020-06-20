@@ -71,26 +71,9 @@ public class LanguageChecker {
         int last = cycle.size() - 1;
         State initialState = cycle.get(last);
 
-        // resetVisited(cycle);
         resetAllVisited();
 
         return hasPathToAcceptingState(initialState);
-    }
-
-    private void resetVisited(List<State> cycle) {
-        for (State s: stateDiagram.getStates()) {
-            if (notInCycle(s, cycle)) {
-                s.setVisited(false);
-            }
-        }
-    }
-
-    private boolean notInCycle(State s, List<State> cycle) {
-        for (State state: cycle) {
-            if (state.equals(s)) return false;
-        }
-
-        return true;
     }
 
     private boolean hasPathToAcceptingState(State state) {
@@ -108,14 +91,6 @@ public class LanguageChecker {
                     }
                 }
             }
-        }
-
-        return false;
-    }
-
-    private boolean acceptingStateInCycle(List<State> cycle) {
-        for (State state: cycle) {
-            if (state.isAccepting()) return true;
         }
 
         return false;
@@ -167,6 +142,7 @@ public class LanguageChecker {
         for (State state: currentPath) {
             if (state.equals(destination)) return true;
         }
+
         return false;
     }
 }
