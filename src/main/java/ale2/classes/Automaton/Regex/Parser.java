@@ -21,6 +21,10 @@ public class Parser {
     private int stateCounter;
 
     public StateDiagram parse(String regularExpression) throws RegularExpressionException {
+        if (regularExpression.equals("")) {
+            throw new IllegalArgumentException("Expression should not be an empty string");
+        }
+
         regularExpression = regularExpression.toLowerCase();
         checkMatchingNumberOfParenthesis(regularExpression);
         checkLegalCharacters(regularExpression);
