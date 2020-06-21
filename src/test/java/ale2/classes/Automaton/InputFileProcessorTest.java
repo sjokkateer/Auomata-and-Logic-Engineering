@@ -95,7 +95,7 @@ public class InputFileProcessorTest {
 
     @Test(expected = FileProcessingException.class)
     @Parameters(method = "getInvalidFormatFiles")
-    public void process_existingFileGivenWithInvalidFormatAlphabet_expectedFileProcessingExceptionThrown(String fileName) throws FileProcessingException {
+    public void process_existingFileGivenWithInvalidFormat_expectedFileProcessingExceptionThrown(String fileName) throws FileProcessingException {
         // Arrange
         InputFileProcessor inputFileProcessor = new InputFileProcessor();
 

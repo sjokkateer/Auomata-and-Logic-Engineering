@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class StateTest {
 
     @Test
-    public void constructor_defaultConstructor_expectedAllfieldsToDefaultToFalse() {
+    public void constructor_defaultConstructor_expectedAllFieldsToDefaultToFalse() {
         // Arrange
         State state = new State();
 
@@ -70,7 +70,7 @@ public class StateTest {
     }
 
     @Test
-    public void getDotFileString_acceptingStateGiven_expectedCircleShape() {
+    public void getDotFileString_acceptingStateGiven_expectedDoubleCircleShape() {
         // Arrange
         State state = new State("1");
         state.setAccepting();
