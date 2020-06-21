@@ -113,7 +113,9 @@ public class InputFileProcessorTest {
                 $( "/invalid_format_accepting_states.txt"),
                 $( "/invalid_format_transitions_end.txt"),
                 $( "/invalid_format_transitions_arrow.txt"),
-                $( "/invalid_format_words.txt")
+                $( "/invalid_format_words.txt"),
+                $( "/invalid_format_no_end_transitions.txt"),
+                $( "/invalid_format_no_end_words.txt")
         );
     }
 
