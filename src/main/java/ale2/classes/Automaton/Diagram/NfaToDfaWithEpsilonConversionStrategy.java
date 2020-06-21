@@ -25,10 +25,6 @@ public class NfaToDfaWithEpsilonConversionStrategy extends NfaToDfaStrategyBase 
         return getEpsilonClosureOf(state);
     }
 
-    public List<State> getEpsilonClosures() {
-        return epsilonClosures;
-    }
-
     private void createEpsilonClosures() {
         for (State state : stateDiagram.getStates()) {
             EpsilonClosure epsilonClosure = createEpsilonClosureFrom(state);
