@@ -16,18 +16,11 @@ abstract public class NfaToDfaStrategyBase {
     }
 
     public static NfaToDfaStrategyBase determineStrategy(StateDiagram stateDiagram) throws NotConvertibleEpsilonNfa {
-//        for (Transition transition : stateDiagram.getAllTransitions()) {
-//            if (transition.getLabel() == '_') {
-//                return new NfaToDfaWithEpsilonConversionStrategy(stateDiagram);
-//            }
-//        }
         if (allTransitionsEpsilon(stateDiagram.getAllTransitions())) {
             throw new NotConvertibleEpsilonNfa();
         }
 
         return new NfaToDfaWithEpsilonConversionStrategy(stateDiagram);
-
-//        return new NfaToDfaWithoutEpsilonConversionStrategy(stateDiagram);
     }
 
     private static boolean allTransitionsEpsilon(List<Transition> allTransitions) {

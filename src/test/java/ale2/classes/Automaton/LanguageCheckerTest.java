@@ -41,6 +41,7 @@ public class LanguageCheckerTest {
 
     @Test
     public void isFinite_infiniteLanguageAsCycleCanTerminate_falseShouldBeReturned() {
+        // Arrange
         List<Transition> transitions = new ArrayList<>();
         State s1 = new State("1");
         State s2 = new State("2");
@@ -68,8 +69,8 @@ public class LanguageCheckerTest {
     }
 
     @Test
-    // ADJUST
     public void isFinite_infiniteLanguageWithEpsilonCycleCanTerminate_falseShouldBeReturned() {
+        // Arrange
         List<Transition> transitions = new ArrayList<>();
         State s1 = new State("1");
         State s2 = new State("2");
@@ -130,6 +131,7 @@ public class LanguageCheckerTest {
 
     @Test
     public void isFinite_infiniteLanguageCycleFromAcceptingStateToItself_falseShouldBeReturned() {
+        // Arrange
         List<Transition> transitions = new ArrayList<>();
         State s1 = new State("1");
 
@@ -152,6 +154,7 @@ public class LanguageCheckerTest {
 
     @Test
     public void isFinite_finiteLanguageCycleOnSink_trueShouldBeReturned() {
+        // Arrange
         List<Transition> transitions = new ArrayList<>();
         State s1 = new State("1");
         State s2 = new State("2");
@@ -177,7 +180,7 @@ public class LanguageCheckerTest {
     }
 
     @Test
-    public void getWords_finiteLanguageNoCyclesInStateDiagram_ListWithOneWordShouldBeReturned() {
+    public void getWords_finiteLanguageNoCyclesInStateDiagram_listWithOneWordShouldBeReturned() {
         // Arrange
         List<Transition> transitions = new ArrayList<>();
         State s1 = new State("1");
@@ -210,6 +213,7 @@ public class LanguageCheckerTest {
 
     @Test
     public void getWords_finiteLanguageWithCycleInStateDiagram_listWithOneWordReturned() {
+        // Arrange
         List<Transition> transitions = new ArrayList<>();
         State s1 = new State("1");
         State s2 = new State("2");
@@ -242,6 +246,7 @@ public class LanguageCheckerTest {
 
     @Test
     public void getWords_finiteLanguageWithMultiplePossibleWordsDepthOnly_listWithMultipleWordsReturned() {
+        // Arrange
         List<Transition> transitions = new ArrayList<>();
         State s1 = new State("1");
         State s2 = new State("2");
@@ -279,45 +284,8 @@ public class LanguageCheckerTest {
     }
 
     @Test
-    public void getWords_finiteLanguageWithMultiplePossibleWordsWideAndDeep_listWithMultipleWordsReturned() {
-//        List<Transition> transitions = new ArrayList<>();
-//        State s1 = new State("1");
-//        State s2 = new State("2");
-//        State s3 = new State("3");
-//        State s4 = new State("4");
-//        State s5 = new State("5");
-//        State s6 = new State("6");
-//
-//        s1.setInitial();
-//
-//        s2.setAccepting();
-//        s4.setAccepting();
-//        s6.setAccepting();
-//
-//        transitions.add(new Transition(s1, 'a', s2));
-//        transitions.add(new Transition(s2, 'b', s3));
-//        transitions.add(new Transition(s3, 'c', s4));
-//
-//        transitions.add(new Transition(s4, 'd', s5));
-//        transitions.add(new Transition(s5, 'e', s6));
-//
-//        StateDiagram sd = StateDiagram.fromTransitions(transitions);
-//
-//        LanguageChecker checker = new LanguageChecker();
-//        checker.setStateDiagram(sd);
-//
-//        // Act
-//        List<Word> languageWords = checker.getWords();
-//        int expectedNumberOfWords = 3;
-//        int actualNumberOfWords = languageWords.size();
-//
-//        // Assert
-//        // Expect to get a, abc, abcde
-//        assertEquals("Only one word possible!", expectedNumberOfWords, actualNumberOfWords);
-    }
-
-    @Test
     public void getWords_infiniteLanguageWithCycleInStateDiagram_emptyListShouldBeReturned() {
+        // Arrange
         List<Transition> transitions = new ArrayList<>();
         State s1 = new State("1");
         State s2 = new State("2");

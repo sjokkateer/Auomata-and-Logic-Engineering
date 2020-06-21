@@ -154,7 +154,7 @@ public class InputFileProcessorTest {
             }
         }
 
-        int expectedNumberOfWords = 8;
+        int expectedNumberOfWords = 0;
         assertEquals("Since no words were read, the Array of words should be empty ", expectedNumberOfWords, inputFileProcessor.getWords().size());
     }
 
