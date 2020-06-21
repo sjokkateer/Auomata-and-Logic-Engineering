@@ -1,14 +1,10 @@
 package ale2.classes.Automaton.Diagram;
 
-import ale2.classes.Automaton.AutomatonFileManager;
-import ale2.classes.Automaton.Exceptions.FileProcessingException;
-import ale2.classes.Automaton.InputFileProcessor;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.File;
 import java.util.Set;
 
 import static junitparams.JUnitParamsRunner.$;

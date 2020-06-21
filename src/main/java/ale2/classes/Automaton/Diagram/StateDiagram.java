@@ -142,7 +142,6 @@ public class StateDiagram implements IDotFile {
     }
 
     @Override
-    // Probably want to override this
     public String getDotFileString() {
         String result = "\trankdir=LR;\n";
         result += "\t\"\" [shape=none]\n";
