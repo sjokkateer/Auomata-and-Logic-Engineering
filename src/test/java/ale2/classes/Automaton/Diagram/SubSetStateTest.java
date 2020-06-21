@@ -158,7 +158,7 @@ public class SubSetStateTest {
 
     @Test
     @Parameters(method = "getNumberOfStates")
-    public void getSymbol_testingFormatOfgetSymbolForAGivenNumberOfStates_expectedFormatToMatch(int numberOfStates) {
+    public void getSymbol_testingFormatOfGetSymbolForAGivenNumberOfStates_expectedFormatToMatch(int numberOfStates) {
         // Arrange
         Set<State> states = new HashSet<>();
 

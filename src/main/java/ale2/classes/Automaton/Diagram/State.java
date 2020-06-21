@@ -21,15 +21,16 @@ public class State implements IDotFile {
 
     public State(String symbol) {
         this();
+
+        if (symbol == null || symbol == "") {
+            throw new IllegalArgumentException("Symbol cannot be null or empty string");
+        }
+
         this.symbol = symbol;
     }
 
     public String getSymbol() {
         return symbol;
-    }
-
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
     }
 
     public String getDotFileString() {
