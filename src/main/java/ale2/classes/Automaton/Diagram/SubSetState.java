@@ -7,13 +7,12 @@ public class SubSetState extends State {
     Set<State> states;
 
     public SubSetState(Set<State> states) {
+        if (states == null || states.size() == 0) {
+            throw new IllegalArgumentException("Set of states may not be empty or null");
+        }
+
         this.states = new HashSet<>();
         addStates(states);
-    }
-
-    public SubSetState(State state) {
-        this.states = new HashSet<>();
-        states.add(state);
     }
 
     private void addStates(Set<State> states) {
@@ -68,7 +67,7 @@ public class SubSetState extends State {
         String result = "";
 
         for(State state : getStates()) {
-            result +=  state.getSymbol();
+            result += state.getSymbol();
         }
 
         return result.hashCode();

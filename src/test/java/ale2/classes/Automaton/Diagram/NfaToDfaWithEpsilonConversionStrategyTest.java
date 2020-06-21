@@ -28,7 +28,7 @@ public class NfaToDfaWithEpsilonConversionStrategyTest {
     }
 
     @Test
-    public void convertToDfa_wikipediaExampleWithMultipleCyclesAndEpsilonTransitionsNfaGiven_expectedDfaWithFourSubSetStatesAndOneDeadState() {
+    public void convertToDfa_wikipediaExampleWithMultipleCyclesAndEpsilonTransitionsNfaGiven_expectedDfaWithFourSubsetStatesAndOneDeadState() {
         // Arrange
         StateDiagram stateDiagram = getStateDiagramFromFile("wikipedia.txt");
         NfaToDfaWithEpsilonConversionStrategy nfaToDfa = new NfaToDfaWithEpsilonConversionStrategy(stateDiagram);
@@ -63,7 +63,7 @@ public class NfaToDfaWithEpsilonConversionStrategyTest {
     }
 
     @Test
-    public void convertToDfa_lectureExampleNfaWithNonEpsilonCycleGiven_expectedDfaWithFourSubSetStatesAndOneDeadState() {
+    public void convertToDfa_lectureExampleNfaWithNonEpsilonCycleGiven_expectedDfaWithFourSubsetStatesAndOneDeadState() {
         // Arrange
         StateDiagram stateDiagram = getStateDiagramFromFile("dfa_georgiana.txt");
         NfaToDfaWithEpsilonConversionStrategy nfaToDfa = new NfaToDfaWithEpsilonConversionStrategy(stateDiagram);
