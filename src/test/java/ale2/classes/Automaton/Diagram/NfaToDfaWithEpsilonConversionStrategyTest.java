@@ -28,16 +28,6 @@ public class NfaToDfaWithEpsilonConversionStrategyTest {
     }
 
     @Test
-    public void convertToDfa_nfaWithOnlyEpsilonTransitionsGiven_expectedNotConvertibleEpsilonNfaThrown() {
-        // Arrange
-        StateDiagram stateDiagram = getStateDiagramFromFile("wikipedia.txt");
-        NfaToDfaWithEpsilonConversionStrategy nfaToDfa = new NfaToDfaWithEpsilonConversionStrategy(stateDiagram);
-
-        // Act // Assert
-        StateDiagram dfa = nfaToDfa.convertToDfa();
-    }
-
-    @Test
     public void convertToDfa_wikipediaExampleWithMultipleCyclesAndEpsilonTransitionsNfaGiven_expectedDfaWithFourSubSetStatesAndOneDeadState() {
         // Arrange
         StateDiagram stateDiagram = getStateDiagramFromFile("wikipedia.txt");
