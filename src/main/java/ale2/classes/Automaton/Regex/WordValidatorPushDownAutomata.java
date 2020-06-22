@@ -50,11 +50,15 @@ public class WordValidatorPushDownAutomata extends WordValidatorBase {
             if (this.currentWord == null && this.stackSize == -1) {
                 this.currentWord = currentWord;
                 this.stackSize = currentStack.size();
+
+                currentPath = new ArrayList<>();
             } else {
                 // This could be our nth cycle, check if the word and size changed else return.
                 if (!this.currentWord.equals(currentWord) || this.stackSize != currentStack.size()) {
                     this.currentWord = currentWord;
                     this.stackSize = currentStack.size();
+
+                    currentPath = new ArrayList<>();
                 } else {
                     return;
                 }
