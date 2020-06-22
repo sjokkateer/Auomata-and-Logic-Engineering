@@ -7,7 +7,6 @@ import ale2.classes.Automaton.Diagram.Transition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 /**
  * Class is responsible for validating words that belong to an FA.
@@ -25,10 +24,16 @@ public class WordValidatorFiniteAutomata extends WordValidatorBase {
             // Indicates our first cycle occurred.
             if (this.currentWord == null) {
                 this.currentWord = currentWord;
+
+                // Reset the cycle
+                currentPath = new ArrayList<>();
             } else {
                 // This could be our nth cycle, check if the word and size changed else return.
                 if (!this.currentWord.equals(currentWord)) {
                     this.currentWord = currentWord;
+
+                    // Need to reset the cycle here as well then.
+                    currentPath = new ArrayList<>();
                 } else {
                     return;
                 }

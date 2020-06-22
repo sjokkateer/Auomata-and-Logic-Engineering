@@ -3,6 +3,7 @@ package ale2;
 import ale2.classes.Automaton.Automaton;
 import ale2.classes.Automaton.AutomatonFileManager;
 import ale2.classes.Automaton.Diagram.NfaConverter;
+import ale2.classes.Automaton.Diagram.PushDownAutomata;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
 import ale2.classes.Automaton.Exceptions.NotConvertibleEpsilonNfa;
@@ -94,6 +95,7 @@ public class App extends JFrame {
                 createAutomatonFromFile();
 
                 if (automaton != null) {
+
                     onAutomatonLoaded();
                 }
             }
@@ -192,10 +194,22 @@ public class App extends JFrame {
     private void onAutomatonLoaded() {
         displayAlphabet();
         createDiagramImage();
-        displayIfDFA();
-        displayWords();
 
-        displayLanguageWords();
+        StateDiagram stateDiagram = automaton.getStateDiagram();
+
+        if (stateDiagram.getClass() == StateDiagram.class) {
+            displayIfDFA();
+            displayLanguageWords();
+
+            convertToDfaBtn.setEnabled(true);
+        }
+
+        if (stateDiagram.getClass() == PushDownAutomata.class || automaton.isDFA()) {
+            // Disable converting to DFA.
+            convertToDfaBtn.setEnabled(false);
+        }
+
+        displayWords();
 
         enableWordFormControls();
         openImageBtn.setEnabled(true);

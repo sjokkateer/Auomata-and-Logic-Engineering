@@ -6,7 +6,6 @@ import ale2.classes.Automaton.Diagram.Transition;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
 import ale2.classes.Automaton.Regex.Word;
 import ale2.classes.Automaton.Regex.WordValidatorBase;
-import ale2.classes.Automaton.Regex.WordValidatorFiniteAutomata;
 
 import java.io.File;
 import java.io.FileNotFoundException;
