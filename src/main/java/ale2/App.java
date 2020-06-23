@@ -6,7 +6,7 @@ import ale2.classes.Automaton.Diagram.NfaConverter;
 import ale2.classes.Automaton.Diagram.PushDownAutomata;
 import ale2.classes.Automaton.Diagram.StateDiagram;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
-import ale2.classes.Automaton.Exceptions.NotConvertibleEpsilonNfa;
+import ale2.classes.Automaton.Exceptions.NotConvertibleNfaException;
 import ale2.classes.Automaton.Exceptions.RegularExpressionException;
 import ale2.classes.Automaton.LanguageChecker;
 import ale2.classes.Automaton.Regex.Parser;
@@ -95,7 +95,6 @@ public class App extends JFrame {
                 createAutomatonFromFile();
 
                 if (automaton != null) {
-
                     onAutomatonLoaded();
                 }
             }
@@ -150,10 +149,10 @@ public class App extends JFrame {
                     try {
                         convertToDfaErrorLb.setText("");
                         nfaConverter = new NfaConverter(automaton.getStateDiagram());
-                    } catch (NotConvertibleEpsilonNfa notConvertibleEpsilonNfa) {
-                        convertToDfaErrorLb.setText(notConvertibleEpsilonNfa.getMessage());
+                    } catch (NotConvertibleNfaException notConvertibleNfaException) {
+                        convertToDfaErrorLb.setText(notConvertibleNfaException.getMessage());
 
-                        notConvertibleEpsilonNfa.printStackTrace();
+                        notConvertibleNfaException.printStackTrace();
                     }
                     String now = LocalDateTime.now().toString();
                     automaton.exportToFile( now + "_original");

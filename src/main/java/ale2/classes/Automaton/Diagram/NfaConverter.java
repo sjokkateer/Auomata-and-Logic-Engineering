@@ -1,12 +1,12 @@
 package ale2.classes.Automaton.Diagram;
 
-import ale2.classes.Automaton.Exceptions.NotConvertibleEpsilonNfa;
+import ale2.classes.Automaton.Exceptions.NotConvertibleNfaException;
 
 public class NfaConverter {
     private NfaToDfaStrategyBase conversionStrategy;
     private StateDiagram convertedStateDiagram;
 
-    public NfaConverter(StateDiagram stateDiagram) throws NotConvertibleEpsilonNfa {
+    public NfaConverter(StateDiagram stateDiagram) throws NotConvertibleNfaException {
         conversionStrategy = NfaToDfaStrategyBase.determineStrategy(stateDiagram);
     }
 

@@ -4,6 +4,7 @@ import ale2.classes.Automaton.Automaton;
 import ale2.classes.Automaton.AutomatonFileManager;
 import ale2.classes.Automaton.Exceptions.FileProcessingException;
 import ale2.classes.Automaton.Exceptions.NotConvertibleEpsilonNfa;
+import ale2.classes.Automaton.Exceptions.NotConvertibleNfaException;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import static org.junit.Assert.*;
 public class NfaToDfaStrategyBaseTest {
 
     @Test(expected = NotConvertibleEpsilonNfa.class)
-    public void determineStrategy_stateDiagramWithOnlyOneEpsilonTransitionsGiven_expectedNotConvertibleEpsilonNfaThrown() throws NotConvertibleEpsilonNfa {
+    public void determineStrategy_stateDiagramWithOnlyOneEpsilonTransitionsGiven_expectedNotConvertibleEpsilonNfaThrown() throws NotConvertibleNfaException {
         // Arrange
         State s1 = new State("1");
         State s2 = new State("2");
@@ -32,7 +33,7 @@ public class NfaToDfaStrategyBaseTest {
     }
 
     @Test(expected = NotConvertibleEpsilonNfa.class)
-    public void determineStrategy_stateDiagramWithMultipleEpsilonTransitionsOnlyGiven_expectedNotConvertibleEpsilonNfaThrown() throws NotConvertibleEpsilonNfa {
+    public void determineStrategy_stateDiagramWithMultipleEpsilonTransitionsOnlyGiven_expectedNotConvertibleEpsilonNfaThrown() throws NotConvertibleNfaException {
         // Arrange
         State s1 = new State("1");
         State s2 = new State("2");
@@ -53,7 +54,7 @@ public class NfaToDfaStrategyBaseTest {
     }
 
     @Test
-    public void determineStrategy_stateDiagramWithMixtureOfTransitionsGiven_expectedNfaToDfaWithEpsilonConversionStrategyReturned() throws NotConvertibleEpsilonNfa, FileProcessingException {
+    public void determineStrategy_stateDiagramWithMixtureOfTransitionsGiven_expectedNfaToDfaWithEpsilonConversionStrategyReturned() throws NotConvertibleNfaException, FileProcessingException {
         // Arrange
         Automaton automaton = Automaton.fromFile(new File(AutomatonFileManager.getResourceFolder() + "/" + "dfa_georgiana.txt"));
         StateDiagram stateDiagram = automaton.getStateDiagram();

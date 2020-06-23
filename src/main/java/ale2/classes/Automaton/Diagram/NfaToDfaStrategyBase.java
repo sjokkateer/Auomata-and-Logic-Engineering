@@ -1,6 +1,7 @@
 package ale2.classes.Automaton.Diagram;
 
 import ale2.classes.Automaton.Exceptions.NotConvertibleEpsilonNfa;
+import ale2.classes.Automaton.Exceptions.NotConvertibleNfaException;
 
 import java.util.*;
 
@@ -15,7 +16,11 @@ abstract public class NfaToDfaStrategyBase {
         determineAlphabet();
     }
 
-    public static NfaToDfaStrategyBase determineStrategy(StateDiagram stateDiagram) throws NotConvertibleEpsilonNfa {
+    public static NfaToDfaStrategyBase determineStrategy(StateDiagram stateDiagram) throws NotConvertibleNfaException {
+        if (stateDiagram.getAllTransitions().size() == 0) {
+            throw new NotConvertibleNfaException();
+        }
+
         if (allTransitionsEpsilon(stateDiagram.getAllTransitions())) {
             throw new NotConvertibleEpsilonNfa();
         }
