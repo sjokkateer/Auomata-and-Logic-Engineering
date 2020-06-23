@@ -53,6 +53,16 @@ public class NfaToDfaStrategyBaseTest {
         NfaToDfaStrategyBase.determineStrategy(stateDiagram);
     }
 
+    @Test(expected = NotConvertibleNfaException.class)
+    public void determineStrategy_stateDiagramWithNoTransitionsGiven_expectedNotConvertibleNfaExceptionThrown() throws NotConvertibleNfaException, FileProcessingException {
+        // Arrange
+        Automaton automaton = Automaton.fromFile(new File(AutomatonFileManager.getResourceFolder() + "/" + "test_input.txt"));
+        StateDiagram stateDiagram = automaton.getStateDiagram();
+
+        // Act // Assert
+        NfaToDfaStrategyBase.determineStrategy(stateDiagram);
+    }
+
     @Test
     public void determineStrategy_stateDiagramWithMixtureOfTransitionsGiven_expectedNfaToDfaWithEpsilonConversionStrategyReturned() throws NotConvertibleNfaException, FileProcessingException {
         // Arrange

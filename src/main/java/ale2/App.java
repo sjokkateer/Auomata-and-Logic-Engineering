@@ -20,7 +20,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Set;
 import java.util.List;
 
@@ -161,7 +163,10 @@ public class App extends JFrame {
 
                         notConvertibleNfaException.printStackTrace();
                     }
-                    String now = LocalDateTime.now().toString();
+
+                    LocalTime time = LocalTime.now();
+                    String now = LocalDate.now().toString() + "_" + time.getHour() + "-" + time.getMinute() + "-" + time.getSecond();
+
                     automaton.exportToFile( now + "_original");
 
                     // Only if it is not already in dfa we convert it to dfa and write
