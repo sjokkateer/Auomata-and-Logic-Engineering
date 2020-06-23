@@ -52,6 +52,8 @@ public class App extends JFrame {
     private JLabel languageLabel;
     private JButton convertToDfaBtn;
     private JLabel convertToDfaErrorLb;
+    private JLabel inputFileErrorLb;
+    private JLabel reErrorLb;
     private JFileChooser fileChooser;
 
     private Automaton automaton;
@@ -128,6 +130,8 @@ public class App extends JFrame {
 
                 if (!regex.equals("")) {
                     try {
+                        clearFields();
+
                         StateDiagram stateDiagram = parser.parse(regex);
 
                         automaton = Automaton.fromStateDiagram(stateDiagram);
@@ -135,6 +139,9 @@ public class App extends JFrame {
 
                         onAutomatonLoaded();
                     } catch (RegularExpressionException ex) {
+                        unsetAutomatonAndLockControls();
+                        reErrorLb.setText(ex.getMessage());
+
                         ex.printStackTrace();
                     }
                 }
@@ -169,6 +176,16 @@ public class App extends JFrame {
         });
     }
 
+    private void unsetAutomatonAndLockControls() {
+        automaton = null;
+
+        wordTextField.setEditable(false);
+        addWordBtn.setEnabled(false);
+
+        openImageBtn.setEnabled(false);
+        convertToDfaBtn.setEnabled(false);
+    }
+
     private void displayLanguageWords() {
         infinityLabel.setText("");
         languageWordListModel = new DefaultListModel();
@@ -191,6 +208,9 @@ public class App extends JFrame {
     }
 
     private void onAutomatonLoaded() {
+        inputFileErrorLb.setText("");
+        convertToDfaErrorLb.setText("");
+
         displayAlphabet();
         createDiagramImage();
 
@@ -229,12 +249,40 @@ public class App extends JFrame {
             openedFileLb.setText("Currently opened: " + file.getName());
 
             try {
+                clearFields();
                 automaton = Automaton.fromFile(file);
             } catch (FileProcessingException e) {
-                System.out.println(e.getMessage());
+                unsetAutomatonAndLockControls();
+
+                openedFileLb.setText("Tried to open: " + file.getName());
+                inputFileErrorLb.setText(e.getMessage());
+
                 e.printStackTrace();
             }
         }
+    }
+
+    private void clearFields() {
+        if (wordListModel != null) {
+            wordListModel.clear();
+        }
+
+        if (languageWordListModel != null) {
+            languageWordListModel.clear();
+        }
+
+        wordTextField.setText("");
+        regexTextField.setText("");
+
+        openedFileLb.setText("");
+        stateDiagramLb.setIcon(null);
+        isDFALb.setText("");
+        alphabetLb.setText("");
+        infinityLabel.setText("");
+
+        inputFileErrorLb.setText("");
+        reErrorLb.setText("");
+        convertToDfaErrorLb.setText("");
     }
 
     private void displayAlphabet() {

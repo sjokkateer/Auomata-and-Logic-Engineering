@@ -123,8 +123,6 @@ public class InputFileProcessor {
             if (line.toLowerCase().contains(END)) break;
             method.add(line);
         }
-
-        if (!line.toLowerCase().contains(END)) throw new NoEndFoundException("Could not find the end. indication after your sequence of " + topic);
     }
 
     private AddLine getStrategy() {
